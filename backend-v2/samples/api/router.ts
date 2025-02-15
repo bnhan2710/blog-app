@@ -29,11 +29,13 @@ function initUserRouter(service: IUserService): Router {
     const {
       name,
       email,
+      password
     } = req.body;
 
     const createdUser = await service.create({
       name,
       email,
+      password
     });
 
     return res.status(201).json(createdUser);
@@ -41,12 +43,20 @@ function initUserRouter(service: IUserService): Router {
 
   // Update a user
   router.put('/:id', async (req, res) => {
-    return res.status(500).json({ reason: 'Not yet implemented' });
+    const {
+      name,email
+    } = req.body
+    const id = req.params.id
+
+    const updated = await service.update(id,{name,email})
+    return res.status(200).json({_id: updated})
   });
 
   // Delete a user
   router.delete('/:id', async (req, res) => {
-    return res.status(500).json({ reason: 'Not yet implemented' });
+    const id = req.params.id
+    const deleted = await service.delete(id)
+    return res.status(200).json({_id: deleted})
   });
 
   return router;

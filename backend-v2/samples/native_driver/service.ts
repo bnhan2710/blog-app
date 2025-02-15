@@ -49,4 +49,11 @@ export class UserServiceImpl implements IUserService  {
     }));
   }
 
+  update(id: string, dto: UserUpdate): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+  delete(id: string) : Promise<string>{
+    throw new Error('Method not implemented.');
+  }
+
 }

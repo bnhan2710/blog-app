@@ -18,7 +18,6 @@ const createHttpServer = () => {
   const server = createServer(app);
   // const userRoute = setupUserRouter( new UserServiceImpl(db));
   const userRoute = setupUserRouter( new UserServiceImplMongoose());
-
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -38,7 +37,6 @@ function mustGetEnv(key: string): string {
 
   return val;
 }
-
 
 async function start() {
   // const db = await connectDb({

@@ -1,18 +1,20 @@
-import { User, IUserService, UserCreation } from '../api/types';
+import { User, IUserService, UserCreation, UserUpdate } from '../api/types';
 import UserModel from './model';
 import { ErrDataNotFound } from '../api/types';
 export class UserServiceImplMongoose implements IUserService  {
 
   async create(dto: UserCreation): Promise<User> {
-    const { name , email } = dto
+    const { name , email, password } = dto
     const user = await UserModel.create({
      name,
-     email
+     email,
+     password
     })
     return {
       id: String(user._id),
       name: user.name,
-      email: user.email
+      email: user.email,
+      createdAt: user.createdAt
     }
   }
 
@@ -35,5 +37,29 @@ export class UserServiceImplMongoose implements IUserService  {
       email: u.email,
       name: u.name,
     }));
+  }
+
+  async update(id: string , dto: UserUpdate): Promise<string>{
+   const isExist = await UserModel.findById(id)
+   if(!isExist){
+    throw ErrDataNotFound
+   }
+   const updated = await UserModel.updateOne({ _id: id }, { $set: dto });
+    if(!updated.modifiedCount){
+      throw new Error('Update fail')
+    }
+    return id
+  }
+
+  async delete(id:string){
+    const isExist = await UserModel.findById(id)
+    if(!isExist){
+      throw ErrDataNotFound
+    }
+    const deleted =  await UserModel.deleteOne({id})
+    if(!deleted.deletedCount){
+      throw new Error('Delete Fail')
+    }
+    return id
   }
 }
