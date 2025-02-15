@@ -5,25 +5,28 @@ export type User = {
   createdAt?:Date
 }
 
-export type UserCreation = {
+export type UserCreationDto = {
   email: string;
   name: string;
   password: string
 };
 
-export type UserUpdate = {
+export type UserUpdateDto = {
   email?: string;
   name?: string;
 }
 
 export const ErrDataNotFound = new Error('Data not found')
 
-export interface IUserService {
+export interface IUserRepository {
 
-  create(dto: UserCreation): Promise<User>;
+  create(dto: UserCreationDto): Promise<User>;
   getAll(): Promise<User[]>;
   getOneById(id: string): Promise<User | null>;
-  update(id:string, dto: UserUpdate) : Promise<string>
-  delete(id:string) : Promise<string>
-
+  // update(id:string, dto: UserUpdate) : Promise<string>
+  // delete(id:string) : Promise<string>
 }
+
+export const DI_TOKENS = {
+  IUserRepository: Symbol.for('IUserRepository')
+};

@@ -1,23 +1,20 @@
 import 'dotenv/config';
+import 'reflect-metadata';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import { Db } from 'mongodb';
 import setupUserRouter from './api/router';
 import { errorHandler } from '../command-ingress/middlewares/error_handler';
 import { createServer } from 'http';
-import MockUserService from './api/mock/user_service';
-import connectDb from './native_driver/connect';
-import { UserServiceImpl } from './native_driver/service';
-import { UserServiceImplMongoose } from './mongoose/service';
+import { container } from './di_container/inversify.config';
 import connect from './mongoose/connect';
-
+import { UserService } from './api/service';
 const app = express();
 
 const createHttpServer = () => {
   const server = createServer(app);
-  // const userRoute = setupUserRouter( new UserServiceImpl(db));
-  const userRoute = setupUserRouter( new UserServiceImplMongoose());
+  const userService = container.get<UserService>(UserService)
+  const userRoute = setupUserRouter(userService);
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

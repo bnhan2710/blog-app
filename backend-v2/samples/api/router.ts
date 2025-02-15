@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
-import { IUserService } from './types';
+import { UserService } from './service';
 
-function initUserRouter(service: IUserService): Router {
+function initUserRouter(service: UserService): Router {
   const router = express.Router();
 
   // Get all users
@@ -15,7 +15,7 @@ function initUserRouter(service: IUserService): Router {
   router.get('/:id', async (req, res) => {
     const userID = req.params.id;
 
-    const user = await service.getOneById(userID);
+    const user = await service.getOne(userID);
 
     if (!user) {
       return res.status(404).json({ message: 'Not Found' });
@@ -32,7 +32,7 @@ function initUserRouter(service: IUserService): Router {
       password
     } = req.body;
 
-    const createdUser = await service.create({
+    const createdUser = await service.createUser({
       name,
       email,
       password
@@ -41,23 +41,23 @@ function initUserRouter(service: IUserService): Router {
     return res.status(201).json(createdUser);
   });
 
-  // Update a user
-  router.put('/:id', async (req, res) => {
-    const {
-      name,email
-    } = req.body
-    const id = req.params.id
+  // // Update a user
+  // router.put('/:id', async (req, res) => {
+  //   const {
+  //     name,email
+  //   } = req.body
+  //   const id = req.params.id
 
-    const updated = await service.update(id,{name,email})
-    return res.status(200).json({_id: updated})
-  });
+  //   const updated = await service.update(id,{name,email})
+  //   return res.status(200).json({_id: updated})
+  // });
 
-  // Delete a user
-  router.delete('/:id', async (req, res) => {
-    const id = req.params.id
-    const deleted = await service.delete(id)
-    return res.status(200).json({_id: deleted})
-  });
+  // // Delete a user
+  // router.delete('/:id', async (req, res) => {
+  //   const id = req.params.id
+  //   const deleted = await service.delete(id)
+  //   return res.status(200).json({_id: deleted})
+  // });
 
   return router;
 }
