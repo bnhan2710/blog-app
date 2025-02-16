@@ -23,8 +23,8 @@ export interface IUserRepository {
   create(dto: UserCreationDto): Promise<User>;
   getAll(): Promise<User[]>;
   getOneById(id: string): Promise<User | null>;
-  // update(id:string, dto: UserUpdate) : Promise<string>
-  // delete(id:string) : Promise<string>
+  update(id:string, dto: UserUpdateDto) : Promise<string>
+  delete(id:string) : Promise<string>
 }
 
 export const DI_TOKENS = {

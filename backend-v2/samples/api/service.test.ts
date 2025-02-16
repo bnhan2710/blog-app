@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import { UserService } from './service';
-import { IUserRepository, User, UserCreationDto } from './types';
+import { IUserRepository, User, UserCreationDto, UserUpdateDto } from './types';
 import { DI_TOKENS } from './types';
 import { DomainError } from './error/domain_error';
 import { ObjectId } from 'mongodb';
 import { Container } from 'inversify';
-import { faker } from '@faker-js/faker/.';
+import { de, fa, faker } from '@faker-js/faker/.';
 
 describe('UserService Test', () => {
   let userService: UserService;
@@ -24,15 +24,13 @@ describe('UserService Test', () => {
         return [
           {
             id: String(new ObjectId()),
-            name: 'John Doe',
-            email: 'hihi@gmail.com',
-            createdAt: new Date(),
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
           },
           {
             id: String(new ObjectId()),
-            name: 'Jane Doe',
-            email: 'hah@gmail.com',
-            createdAt: new Date(),
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
           },
         ];
 
@@ -40,11 +38,19 @@ describe('UserService Test', () => {
       getOneById: jest.fn(async (id: string): Promise<User | null> => {
         return {
           id: id,
-          name: 'Bao Nhan',
-          email: 'nhan@gmail.com',
-          createdAt: new Date(),
+          name: faker.person.fullName(),
+          email: faker.internet.email(),
         };
       }),
+
+      update: jest.fn(async (id: string, dto: UserUpdateDto): Promise<string> => {
+        return id;
+      }),
+
+      delete: jest.fn(async (id: string): Promise<string> => {
+        return id;
+      }),
+
     }
 
     const container = new Container();
@@ -100,4 +106,93 @@ describe('UserService Test', () => {
     });
   });
 
+
+  describe('getAll', () => {
+    it('Should return all users', async () => {
+      const users = await userService.getAll();
+      expect(mockUserRepository.getAll).toHaveBeenCalledTimes(1);
+      expect(users).toBeTruthy();
+      expect(users.length).toBeGreaterThan(0);
+      users.forEach((user) => {
+        expect(user.id).toBeTruthy();
+        expect(user.name).toBeTruthy();
+        expect(user.email).toBeTruthy();
+      });
+    });
+  });
+
+  describe('getOne', () => {
+    it('Should return user when input is valid', async () => {
+      const id = String(new ObjectId());
+      const user = await userService.getOne(id);
+      expect(mockUserRepository.getOneById).toHaveBeenCalledWith(id);
+      expect(mockUserRepository.getOneById).toHaveBeenCalledTimes(1);
+      expect(user).toBeTruthy();
+      expect(user).not.toBeNull();
+      expect(user!.id).toEqual(id);
+    });
+  });
+
+  describe('updateUser', () => {
+    it('Should update user when input is valid', async () => {
+      const id = String(new ObjectId());
+      const userUpdateDto: UserUpdateDto = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+      }
+      const result = await userService.updateUser(id, userUpdateDto);
+      expect(mockUserRepository.update).toHaveBeenCalledWith(id, userUpdateDto);
+      expect(mockUserRepository.update).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(id);
+    });
+    it('Should return error if the input is violate the business rules', async () => {
+      const id = String(new ObjectId());
+      const userUpdateDto: UserUpdateDto = {
+        name: 'KDot',
+      }
+      await expect(async() => userService.updateUser(id, userUpdateDto))
+        .rejects
+        .toThrowError(new DomainError('Name must be longer than 5 characters'));
+      // Expect repository is called in right way
+      expect(mockUserRepository.update).toHaveBeenCalledTimes(0);
+    });
+    it('Should return error if the repository does this', async () => {
+      const id = String(new ObjectId());
+      const userUpdateDto: UserUpdateDto = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+      }
+      // Remock the function create in repository
+      mockUserRepository.update = jest.fn(async (_: string, __: UserUpdateDto): Promise<string> => {
+        throw new Error('Error when update record to database');
+      });
+      await expect(async() => await userService.updateUser(id, userUpdateDto))
+      .rejects
+      .toThrowError(new DomainError('Error when update user'));
+      // Expect repository is called in right way
+      expect(mockUserRepository.update).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('deleteUser', () => {
+    it('Should delete user when input is valid', async () => {
+      const id = String(new ObjectId());
+      const result = await userService.deleteUser(id);
+      expect(mockUserRepository.delete).toHaveBeenCalledWith(id);
+      expect(mockUserRepository.delete).toHaveBeenCalledTimes(1);
+      expect(result).toEqual(id);
+    });
+    it('Should return error if the repository does this', async () => {
+      const id = String(new ObjectId());
+      // Remock the function create in repository
+      mockUserRepository.delete = jest.fn(async (_: string): Promise<string> => {
+        throw new Error('Error when delete record to database');
+      });
+      await expect(async() => await userService.deleteUser(id))
+      .rejects
+      .toThrowError(new DomainError('Error when delete user'));
+      // Expect repository is called in right way
+      expect(mockUserRepository.delete).toHaveBeenCalledTimes(1);
+    });
+  });
 });

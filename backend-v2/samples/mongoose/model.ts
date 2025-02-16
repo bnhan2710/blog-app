@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(timestampPlugin);
 userSchema.pre('save', async function(this, next, option){
   // userSchema.plugin()
+  //hash password
   next()
 });
 
@@ -22,9 +23,6 @@ userSchema.post('save', function(this, result, next){
   next()
 })
 
-userSchema.pre('findOne', function(this, next){
-
-})
 
 const User = mongoose.model('User', userSchema);
 

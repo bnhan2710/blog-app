@@ -1,4 +1,4 @@
-import { User, IUserRepository, UserCreationDto } from '../api/types';
+import { User, IUserRepository, UserCreationDto, UserUpdateDto } from '../api/types';
 import UserModel from './model';
 import { ErrDataNotFound } from '../api/types';
 import { injectable } from 'inversify'
@@ -17,7 +17,6 @@ export class UserRepository implements IUserRepository  {
       id: String(user._id),
       name: user.name,
       email: user.email,
-      createdAt: user.createdAt
     }
   }
 
@@ -42,27 +41,27 @@ export class UserRepository implements IUserRepository  {
     }));
   }
 
-  // async update(id: string , dto: UserUpdate): Promise<string>{
-  //  const isExist = await UserModel.findById(id)
-  //  if(!isExist){
-  //   throw ErrDataNotFound
-  //  }
-  //  const updated = await UserModel.updateOne({ _id: id }, { $set: dto });
-  //   if(!updated.modifiedCount){
-  //     throw new Error('Update fail')
-  //   }
-  //   return id
-  // }
+  async update(id: string , dto: UserUpdateDto): Promise<string>{
+   const isExist = await UserModel.findById(id)
+   if(!isExist){
+    throw ErrDataNotFound
+   }
+   const updated = await UserModel.updateOne({ _id: id }, { $set: dto });
+    if(!updated.modifiedCount){
+      throw new Error('Update fail')
+    }
+    return id
+  }
 
-  // async delete(id:string){
-  //   const isExist = await UserModel.findById(id)
-  //   if(!isExist){
-  //     throw ErrDataNotFound
-  //   }
-  //   const deleted =  await UserModel.deleteOne({id})
-  //   if(!deleted.deletedCount){
-  //     throw new Error('Delete Fail')
-  //   }
-  //   return id
-  // }
+  async delete(id:string){
+    const isExist = await UserModel.findById(id)
+    if(!isExist){
+      throw ErrDataNotFound
+    }
+    const deleted =  await UserModel.deleteOne({_id: id})
+    if(!deleted.deletedCount){
+      throw new Error('Delete Fail')
+    }
+    return id
+  }
 }

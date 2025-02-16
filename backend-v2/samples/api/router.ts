@@ -41,23 +41,23 @@ function initUserRouter(service: UserService): Router {
     return res.status(201).json(createdUser);
   });
 
-  // // Update a user
-  // router.put('/:id', async (req, res) => {
-  //   const {
-  //     name,email
-  //   } = req.body
-  //   const id = req.params.id
+  // Update a user
+  router.put('/:id', async (req, res) => {
+    const {
+      name,email
+    } = req.body
+    const id = req.params.id
 
-  //   const updated = await service.update(id,{name,email})
-  //   return res.status(200).json({_id: updated})
-  // });
+    const updated = await service.updateUser(id,{name,email})
+    return res.status(200).json({_id: updated})
+  });
 
-  // // Delete a user
-  // router.delete('/:id', async (req, res) => {
-  //   const id = req.params.id
-  //   const deleted = await service.delete(id)
-  //   return res.status(200).json({_id: deleted})
-  // });
+  // Delete a user
+  router.delete('/:id', async (req, res) => {
+    const id = req.params.id
+    const deleted = await service.deleteUser(id)
+    return res.status(200).json({_id: deleted})
+  });
 
   return router;
 }
