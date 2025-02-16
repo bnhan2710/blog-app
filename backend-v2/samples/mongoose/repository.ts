@@ -1,9 +1,12 @@
-import { User, IUserService, UserCreation, UserUpdate } from '../api/types';
+import { User, IUserRepository, UserCreationDto, UserUpdateDto } from '../api/types';
 import UserModel from './model';
 import { ErrDataNotFound } from '../api/types';
-export class UserServiceImplMongoose implements IUserService  {
+import { injectable } from 'inversify'
 
-  async create(dto: UserCreation): Promise<User> {
+@injectable()
+export class UserRepository implements IUserRepository  {
+
+  async create(dto: UserCreationDto): Promise<User> {
     const { name , email, password } = dto
     const user = await UserModel.create({
      name,
@@ -14,7 +17,6 @@ export class UserServiceImplMongoose implements IUserService  {
       id: String(user._id),
       name: user.name,
       email: user.email,
-      createdAt: user.createdAt
     }
   }
 
@@ -39,7 +41,7 @@ export class UserServiceImplMongoose implements IUserService  {
     }));
   }
 
-  async update(id: string , dto: UserUpdate): Promise<string>{
+  async update(id: string , dto: UserUpdateDto): Promise<string>{
    const isExist = await UserModel.findById(id)
    if(!isExist){
     throw ErrDataNotFound
@@ -56,7 +58,7 @@ export class UserServiceImplMongoose implements IUserService  {
     if(!isExist){
       throw ErrDataNotFound
     }
-    const deleted =  await UserModel.deleteOne({id})
+    const deleted =  await UserModel.deleteOne({_id: id})
     if(!deleted.deletedCount){
       throw new Error('Delete Fail')
     }

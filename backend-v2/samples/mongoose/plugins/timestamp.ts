@@ -1,6 +1,6 @@
 import { Schema, Document } from 'mongoose';
 
-export function timestampPlugin(schema: Schema, options: any) {
+export function timestampPlugin(schema: Schema, options: Record<string, unknown>) {
   schema.add({
     createdAt: { type: Date, default: Date.now },
   });
