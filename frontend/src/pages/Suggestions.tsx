@@ -12,7 +12,7 @@ export default function Suggestions() {
     const {data: topics} = useQuery({
         queryFn: () =>
             httpRequest.get(
-                `${url}/suggestions/topics?userId=${user._id}&limit=no-limit`
+                `${url}/suggestions/topics?userId=${user.id}&limit=no-limit`
             ),
         queryKey: ["all", "topics", "suggest"],
     });
@@ -60,7 +60,7 @@ export default function Suggestions() {
                     }}
                 >
                     {topics?.data.map((t: any) => (
-                        <Topic name={t.name} key={t._id}/>
+                        <Topic name={t.name} key={t.id}/>
                     ))}
                 </div>
             </div>

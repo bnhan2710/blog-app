@@ -54,7 +54,7 @@ export default function Write() {
         queryKey: ["new", "blog", "post"],
         enabled: false,
         onSuccess(data) {
-            navigate(`/blog/${data.data._id}`);
+            navigate(`/blog/${data.data.id}`);
         },
     });
 

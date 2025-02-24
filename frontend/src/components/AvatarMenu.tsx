@@ -13,7 +13,7 @@ export default function AvatarMenu() {
         <AuthMenu
             avatar={user!.avatar}
             email={user!.email}
-            userId={user!._id}
+            userId={user!.id}
             logout={logout}
         />
     ) : (
@@ -149,7 +149,7 @@ function AuthMenu({
                 }}
             >
                 <Link
-                    to={`/user/${userId}`}
+                    to={`/users/${userId}`}
                     style={{textDecoration: "none", color: "inherit"}}
                 >
                     <MenuItem
@@ -201,7 +201,7 @@ function AuthMenu({
                     </MenuItem>
                 </Link>
                 <Link
-                    to={`/user/${userId}/lists`}
+                    to={`/users/${userId}/lists`}
                     style={{
                         textDecoration: "none",
                         color: "inherit",

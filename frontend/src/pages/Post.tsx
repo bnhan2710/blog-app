@@ -31,9 +31,13 @@ export default function Post() {
         queryFn: () => httpRequest.get(`${url}/post/${id}`),
         queryKey: ["blog", id],
         onSuccess: (data) => {
+            console.log('Fetch result: ', data);
+
             document.title = data.data.post.title + " - Medium";
-            setVotes(data.data.post.votes.length ?? 0);
-            setTurnBlack(data.data.post.votes.includes(user?._id));
+            setVotes(0);
+            setTurnBlack(true);
+            // setVotes(data.data.post?.votes?.length ?? 0);
+            // setTurnBlack(data.data.post?.votes.includes(user?.id));
         },
     });
 
@@ -43,7 +47,7 @@ export default function Post() {
         enabled: false,
         onSuccess: (res) => {
             if (res.data.success) {
-                socket.emit("notify", {userId: data?.data.user._id});
+                socket.emit("notify", {userId: data?.data.post.author.id});
                 setVotes((prev) => prev + 1);
             }
         },
@@ -115,11 +119,11 @@ export default function Post() {
                     {data?.data && (
                         <PostAuthor
                             title={data.data.post.title}
-                            avatar={data.data.user.avatar}
-                            postId={data.data.post._id}
+                            avatar={data.data.post.author?.avatar || ''}
+                            postId={data.data.post.id}
                             timestamp={data.data.post.createdAt}
-                            username={data.data.user.name}
-                            userId={data.data.user._id}
+                            username={data.data.post.author?.name || ''}
+                            userId={data.data.post.author?.id}
                             postUrl={postUrl}
                             anchorEl={anchorEl}
                             deletePost={deletePost}
@@ -194,13 +198,13 @@ export default function Post() {
                                 >
                   <span
                       onClick={() =>
-                          data?.data.post.userId !== user?._id && votePost()
+                          data?.data.post.userId !== user?.id && votePost()
                       }
                       style={{
                           ...iconColor,
                           color: turnBlack ? "black" : "rgb(171 169 169)",
                           cursor:
-                              data?.data.post.userId == user?._id
+                              data?.data.post.userId == user?.id
                                   ? "not-allowed"
                                   : "pointer",
                       }}
@@ -250,18 +254,18 @@ export default function Post() {
                                     open={open}
                                     handleClose={handleClose}
                                     editPost={editPost}
-                                    userId={data?.data.user._id}
+                                    userId={data?.data.post.author.id}
                                 />
                             </div>
                         </div>
                     </div>
-                    {id && data?.data?.user._id && (
+                    {id && data?.data?.post.author.id && (
                         <MoreFrom
-                            userId={data?.data?.user._id}
+                            userId={data?.data?.post.author.id}
                             postId={id}
-                            avatar={data?.data?.user.avatar}
-                            username={data?.data?.user.name}
-                            bio={data.data?.user?.bio}
+                            avatar={data?.data?.post.author.avatar}
+                            username={data?.data?.post.author.name}
+                            bio={''}
                             followers={data.data?.user?.followers}
                         />
                     )}
@@ -279,11 +283,11 @@ export default function Post() {
             >
                 {data?.data.user && (
                     <UserPostCard
-                        followers={data.data.user.followers}
-                        userId={data.data.user._id}
-                        username={data.data.user.name}
-                        bio={data.data.user.bio}
-                        image={data.data.user.avatar}
+                        followers={data.data.post.author.followers}
+                        userId={data.data.post.author.id}
+                        username={data.data.post.author.name}
+                        bio={data.data.post.author.bio}
+                        image={data.data.post.author.avatar}
                     />
                 )}
                 {isAuthenticated ? (

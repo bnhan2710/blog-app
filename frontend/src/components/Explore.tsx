@@ -41,15 +41,15 @@ export default function Explore() {
                                     }}
                                     filterAuthorPost={() => {
                                     }}
-                                    postId={item.post._id}
+                                    postId={item.post.id}
                                     timestamp={item.post.createdAt}
                                     title={item.post.title}
                                     username={item.user.name}
-                                    userId={item.user._id}
+                                    userId={item.user.id}
                                     image={item.post.image}
                                     tag={item.post.tags.at(0)}
                                     userImage={item.user.avatar}
-                                    key={item.post._id}
+                                    key={item.post.id}
                                     summary={item.post.summary}
                                 />
                             );

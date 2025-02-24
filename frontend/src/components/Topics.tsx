@@ -14,7 +14,7 @@ export default function Topics({
     const {user} = useAuth();
     const {data} = useQuery({
         queryFn: () =>
-            httpRequest.get(`${url}/suggestions/topics?userId=${user?._id}`),
+            httpRequest.get(`${url}/suggestions/topics?userId=${user?.id}`),
         queryKey: ["suggest", "topics"],
     });
 
@@ -39,7 +39,7 @@ export default function Topics({
                     flexWrap: "wrap",
                 }}
             >
-                {data?.data?.map((item: { _id: string; name: string }) => (
+                {data?.data?.map((item: { id: string; name: string }) => (
                     <Chip
                         style={{
                             backgroundColor: "rgb(242, 242, 242)",
@@ -49,7 +49,7 @@ export default function Topics({
                             fontSize: "13.8px",
                             ...style,
                         }}
-                        key={item._id}
+                        key={item.id}
                         text={item.name}
                     />
                 ))}

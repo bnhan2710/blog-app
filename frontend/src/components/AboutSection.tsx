@@ -48,13 +48,13 @@ export default function AboutSection({
                 }}
             >
                 <Link
-                    to={`/user/${userId}/followers`}
+                    to={`/users/${userId}/followers`}
                     style={{color: "#72a589", fontSize: "13px", textDecoration: "none"}}
                 >
                     {followers} Followers
                 </Link>
                 <Link
-                    to={`/user/${userId}/followings`}
+                    to={`/users/${userId}/followings`}
                     style={{color: "#72a589", fontSize: "13px", textDecoration: "none"}}
                 >
                     {followings} Followings

@@ -9,6 +9,7 @@ export default [
   {
     rules: {
       '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+      '@typescript-eslint/no-explicit-any': ['off'],
       'quotes': ['error', 'single'],
       'no-trailing-spaces': ['error'],
     }

@@ -9,13 +9,13 @@ import {useAppContext} from "../App";
 type UserCardProps = {
     name: string;
     bio?: string;
-    _id: string;
+    id: string;
     avatar: string;
     followers: Array<string>;
 };
 export default function UserCard({
                                      name,
-                                     _id,
+                                     id,
                                      avatar,
                                      bio,
                                      followers,
@@ -23,16 +23,16 @@ export default function UserCard({
     const {user} = useAuth();
     const {socket} = useAppContext();
     const [iFollow, setIFollow] = useState<boolean>(
-        () => followers.includes(user!._id) ?? false
+        () => followers?.includes(user!.id) ?? false
     );
     const {refetch: follow} = useQuery({
-        queryFn: () => httpRequest.put(`${url}/user/follow/${_id}`),
-        queryKey: ["handle", "follow", _id],
+        queryFn: () => httpRequest.put(`${url}/users/follow/${id}`),
+        queryKey: ["handle", "follow", id],
         enabled: false,
     });
     const {refetch: unfollow} = useQuery({
-        queryFn: () => httpRequest.put(`${url}/user/unfollow/${_id}`),
-        queryKey: ["handle", "unfollow", _id],
+        queryFn: () => httpRequest.put(`${url}/users/unfollow/${id}`),
+        queryKey: ["handle", "unfollow", id],
         enabled: false,
     });
 
@@ -42,7 +42,7 @@ export default function UserCard({
             unfollow();
         } else {
             setIFollow(true);
-            socket.emit("notify", {userId: _id});
+            socket.emit("notify", {userId: id});
             follow();
         }
     }
@@ -58,7 +58,7 @@ export default function UserCard({
                 margin: "12px 0",
             }}
         >
-            <Link to={`/user/${_id}`}>
+            <Link to={`/users/${id}`}>
                 <img
                     style={{width: "36px", borderRadius: "50%", marginTop: "-5px"}}
                     src={
@@ -69,7 +69,7 @@ export default function UserCard({
                 />
             </Link>
             <Link
-                to={`/user/${_id}`}
+                to={`/users/${id}`}
                 className="name_details"
                 style={{color: "inherit", textDecoration: "none"}}
             >

@@ -9,7 +9,7 @@ export type User = {
     bio: string;
     email: string;
     name: string;
-    _id: string;
+    id: string;
     list: Array<any>;
 };
 
@@ -39,7 +39,7 @@ export default function Auth({children}: AuthProps) {
                     localStorage.getItem("refresh_token") as string
                 ),
             }),
-        queryKey: ["logout", user?._id],
+        queryKey: ["logout", user?.id],
         enabled: false,
         onSuccess() {
             setUser(undefined);

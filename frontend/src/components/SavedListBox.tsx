@@ -15,7 +15,7 @@ export default function SavedListBox({
                                      }: SavedListBoxProps) {
     return (
         <Link
-            to={`/user/${userId}/lists?active=${name}`}
+            to={`/users/${userId}/lists?active=${name}`}
             style={{
                 width: "100%",
                 backgroundColor: "#fafafa",

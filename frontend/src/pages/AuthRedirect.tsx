@@ -22,7 +22,7 @@ export default function AuthRedirect() {
 
     useEffect(() => {
         axios
-            .get(`${url}/user/${query.get("uid")}`)
+            .get(`${url}/users/${query.get("uid")}`)
             .then((res) => {
                 if (!res.data.success) {
                     setErr("Something unexpected happened");

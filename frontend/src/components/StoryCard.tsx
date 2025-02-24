@@ -31,7 +31,7 @@ export default function StoryCard({
                     gap: "8px",
                 }}
             >
-                <Link to={`/user/${userId}`}>
+                <Link to={`/users/${userId}`}>
                     <img
                         style={{width: "22px", borderRadius: "50%"}}
                         src={avatar}
@@ -40,7 +40,7 @@ export default function StoryCard({
                 </Link>
                 <Link
                     className="font"
-                    to={`/user/${userId}`}
+                    to={`/users/${userId}`}
                     style={{
                         fontFamily: "Roboto Slab",
                         fontSize: "12.75px",

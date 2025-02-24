@@ -46,11 +46,11 @@ function HomeContainer({tag}: { tag: string }) {
     });
 
     function filterPost(postId: string) {
-        setposts((prev) => prev.filter((item) => item.post._id !== postId));
+        setposts((prev) => prev.filter((item) => item.post.id !== postId));
     }
 
     function filterAuthorPost(userId: string) {
-        setposts((prev) => prev.filter((item) => item.user._id !== userId));
+        setposts((prev) => prev.filter((item) => item.user.id !== userId));
     }
 
     return (
@@ -89,15 +89,15 @@ function HomeContainer({tag}: { tag: string }) {
                                 showUserList={true}
                                 filterPost={filterPost}
                                 filterAuthorPost={filterAuthorPost}
-                                postId={item.post._id}
+                                postId={item.post.id}
                                 timestamp={item.post.createdAt}
                                 title={item.post.title}
                                 username={item.user.name}
-                                userId={item.user._id}
+                                userId={item.user.id}
                                 image={item.post.image}
                                 tag={item.post.tags.at(0)}
                                 userImage={item.user.avatar}
-                                key={item.post._id}
+                                key={item.post.id}
                                 summary={item.post.summary}
                             />
                         );

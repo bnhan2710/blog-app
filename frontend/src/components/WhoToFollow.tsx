@@ -5,7 +5,7 @@ import UserCard from "./UserCard";
 
 export default function WhoToFollow() {
     const {data: response} = useQuery({
-        queryFn: () => httpRequest.get(`${url}/user/suggest`),
+        queryFn: () => httpRequest.get(`${url}/users/suggest`),
         queryKey: ["who", "follow"],
     });
     return (
@@ -29,7 +29,7 @@ export default function WhoToFollow() {
                 {response?.data.map(
                     (item: {
                         avatar: string;
-                        _id: string;
+                        id: string;
                         name: string;
                         bio: string;
                         followers: Array<string>;
@@ -37,10 +37,10 @@ export default function WhoToFollow() {
                         return (
                             <UserCard
                                 avatar={item.avatar}
-                                _id={item._id}
+                                id={item.id}
                                 name={item.name}
                                 bio={item.bio}
-                                key={item._id}
+                                key={item.id}
                                 followers={item.followers}
                             />
                         );

@@ -23,7 +23,7 @@ export default function MoreFrom({
 }) {
     const {user} = useAuth();
     const {socket} = useAppContext();
-    const [iFollow, setIFollow] = useState(followers.includes(user?._id ?? ""));
+    const [iFollow, setIFollow] = useState(followers?.includes(user?.id ?? ""));
     const [posts, setposts] = useState<Array<any>>([]);
     const {handleToast} = useAppContext();
 
@@ -36,19 +36,19 @@ export default function MoreFrom({
     });
 
     const {refetch: follow} = useQuery({
-        queryFn: () => httpRequest.put(`${url}/user/follow/${userId}`),
+        queryFn: () => httpRequest.put(`${url}/users/follow/${userId}`),
         queryKey: ["follow", "more", "from", postId, userId],
         enabled: false,
     });
 
     const {refetch: unfollow} = useQuery({
-        queryFn: () => httpRequest.put(`${url}/user/unfollow/${userId}`),
+        queryFn: () => httpRequest.put(`${url}/users/unfollow/${userId}`),
         queryKey: ["unfollow", "more", "from", postId, userId],
         enabled: false,
     });
 
     function filterPost(postId: string) {
-        setposts((prev) => prev.filter((item) => item._id !== postId));
+        setposts((prev) => prev.filter((item) => item.id !== postId));
     }
 
     function handleFollowUnfollow() {
@@ -85,7 +85,7 @@ export default function MoreFrom({
             >
                 <div className="left_more_from" style={{width: "65%"}}>
                     <Link
-                        to={`/user/${userId}`}
+                        to={`/users/${userId}`}
                         style={{
                             textDecoration: "none",
                             color: "inherit",
@@ -106,7 +106,7 @@ export default function MoreFrom({
                     </p>
                 </div>
                 <div className="right_more_from">
-                    {user?._id !== userId && (
+                    {user?.id !== userId && (
                         <button
                             onClick={() => handleFollowUnfollow()}
                             style={{
@@ -132,13 +132,13 @@ export default function MoreFrom({
                 {posts.map((post: any) => {
                     return (
                         <Post
-                            postId={post._id}
+                            postId={post.id}
                             summary={post.summary}
                             title={post.title}
                             timestamp={post.createdAt}
                             showMuteicon={false}
                             image={post.image}
-                            key={post._id}
+                            key={post.id}
                             tag={post.tags.at(0)}
                             showUserList={false}
                             userId={post.userId}
