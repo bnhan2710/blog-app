@@ -37,11 +37,11 @@ export default function TopPicks({text, showImg = false}: TopPicksProps) {
                         <StoryCard
                             avatar={item.user.avatar}
                             showImg={showImg}
-                            key={item.post._id}
+                            key={item.post.id}
                             image={item.post.image}
-                            postId={item.post._id}
+                            postId={item.post.id}
                             title={item.post.title}
-                            userId={item.user._id}
+                            userId={item.user.id}
                             username={item.user.name}
                         />
                     );

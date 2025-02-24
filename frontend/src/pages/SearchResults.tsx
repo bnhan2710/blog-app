@@ -45,7 +45,7 @@ export default function SearchResults() {
     const {refetch} = useQuery({
         queryFn: () =>
             httpRequest.post(`${url}/search/${apiQuery}/${query}`, {
-                userId: user?._id,
+                userId: user?.id,
             }),
         queryKey: ["search", "get", tab, query],
         enabled: false,
@@ -77,11 +77,11 @@ export default function SearchResults() {
     }, [apiQuery]);
 
     function filterPost(postId: string) {
-        setPosts((prev) => prev.filter((item) => item?.post?._id !== postId));
+        setPosts((prev) => prev.filter((item) => item?.post?.id !== postId));
     }
 
     function filterAuthorPost(userId: string) {
-        setPosts((prev) => prev.filter((item) => item.user._id !== userId));
+        setPosts((prev) => prev.filter((item) => item.user.id !== userId));
     }
 
     return (
@@ -141,15 +141,15 @@ export default function SearchResults() {
                                 showUserList={true}
                                 filterPost={filterPost}
                                 filterAuthorPost={filterAuthorPost}
-                                postId={item.post._id}
+                                postId={item.post.id}
                                 timestamp={item.post.createdAt}
                                 title={item.post.title}
                                 username={item.user.name}
-                                userId={item.user._id}
+                                userId={item.user.id}
                                 image={item.post.image}
                                 tag={item.post.tags.at(0)}
                                 userImage={item.user.avatar}
-                                key={item.post._id}
+                                key={item.post.id}
                                 summary={item.post.summary}
                                 showMuteicon={false}
                             />
@@ -169,7 +169,7 @@ export default function SearchResults() {
                                 return (
                                     <Chip
                                         text={item.name}
-                                        key={item._id}
+                                        key={item.id}
                                         style={{padding: "12px 14px", fontSize: "13.8px"}}
                                     />
                                 );
@@ -188,12 +188,12 @@ export default function SearchResults() {
                             {users.map((item: any) => {
                                 return (
                                     <UserCard
-                                        _id={item._id}
+                                        id={item.id}
                                         avatar={item.avatar}
                                         followers={item.followers}
                                         name={item.name}
                                         bio={item.bio}
-                                        key={item._id}
+                                        key={item.id}
                                     />
                                 );
                             })}

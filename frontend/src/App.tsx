@@ -42,8 +42,8 @@ export default function App() {
 
     useEffect(() => {
         if (!user) return;
-        socket.emit("start", {userId: user?._id});
-        socket.emit("checkNotifications", {userId: user?._id});
+        socket.emit("start", {userId: user?.id});
+        socket.emit("checkNotifications", {userId: user?.id});
         socket.on("notificationsCount", ({count}) => {
             setNotificationsCount(count);
         });
@@ -92,7 +92,7 @@ export default function App() {
                     <Route path="/suggestions" element={<Suggestions/>}/>
                     <Route path="/search/:tab/:query" element={<SearchResults/>}/>
                     <Route path="/blog/:id" element={<Post/>}/>
-                    <Route path="/user/:id/:tab?" element={<User/>}/>
+                    <Route path="/users/:id/:tab?" element={<User/>}/>
                     <Route
                         path="/notifications"
                         element={

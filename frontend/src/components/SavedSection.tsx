@@ -5,7 +5,7 @@ import {url} from "../baseUrl";
 
 export default function SavedSection({userId}: { userId: string }) {
     const {data: response} = useQuery({
-        queryFn: () => httpRequest.get(`${url}/user/list`),
+        queryFn: () => httpRequest.get(`${url}/users/list`),
         queryKey: ["user", "all", "list"],
         onSuccess(r) {
             console.log(r.data.lists);
@@ -17,7 +17,7 @@ export default function SavedSection({userId}: { userId: string }) {
                 return (
                     <SavedListBox
                         name={item.name}
-                        key={item._id}
+                        key={item.id}
                         stories={item.posts.length}
                         images={item.images}
                         userId={userId}

@@ -27,7 +27,7 @@ export default function PostMenu({
         "aria-labelledby": "basic-button",
       }}
     >
-      {userId === user?._id && (
+      {userId === user?.id && (
         <>
           <div style={{ padding: "8px 18px" }}>
             <p

@@ -22,8 +22,8 @@ const DEFAULT_OPTIONS = [
 export default function SuggestionBar({activeTab}: { activeTab: string }) {
     const {user} = useAuth();
     const {data: response} = useQuery({
-        queryFn: () => httpRequest.get(`${url}/user/interests`),
-        queryKey: ["interests", "get", user?._id],
+        queryFn: () => httpRequest.get(`${url}/users/interests`),
+        queryKey: ["interests", "get", user?.id],
     });
     const [options, setOptions] = useState(DEFAULT_OPTIONS);
     return (

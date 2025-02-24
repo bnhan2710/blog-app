@@ -16,13 +16,13 @@ export default function Notifications({
 }) {
     const {user} = useAuth();
     const {data, isLoading, isError} = useQuery({
-        queryFn: () => httpRequest.get(`${url}/user/notifications`),
-        queryKey: ["notifications", "user", user?._id],
+        queryFn: () => httpRequest.get(`${url}/users/notifications`),
+        queryKey: ["notifications", "user", user?.id],
     });
     const {socket} = useAppContext();
 
     useDebounce(() => {
-        socket.emit("readAll", {userId: user?._id});
+        socket.emit("readAll", {userId: user?.id});
         emptyNotifications();
     }, []);
 
@@ -70,7 +70,7 @@ export default function Notifications({
                     </div>
                     {data?.data?.map(
                         (item: {
-                            _id: string;
+                            id: string;
                             userId: string;
                             username: string;
                             avatar: string;
@@ -82,7 +82,7 @@ export default function Notifications({
                         }) => {
                             return (
                                 <Notification
-                                    key={item._id}
+                                    key={item.id}
                                     avatar={item.avatar}
                                     createdAt={item.createdAt}
                                     message={item.message}

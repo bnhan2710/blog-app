@@ -13,7 +13,7 @@ export default function Topic({name}: TopicProps) {
     const [iFollow, setIFollow] = useState(false);
 
     const {refetch: add} = useQuery({
-        queryFn: () => httpRequest.patch(`${url}/user/interests/?topic=${name}`),
+        queryFn: () => httpRequest.patch(`${url}/users/interests/?topic=${name}`),
         queryKey: ["add", "user", "intrest", name],
         enabled: false,
         onSuccess(res) {
@@ -24,7 +24,7 @@ export default function Topic({name}: TopicProps) {
     });
 
     const {refetch: remove} = useQuery({
-        queryFn: () => httpRequest.delete(`${url}/user/interests/?topic=${name}`),
+        queryFn: () => httpRequest.delete(`${url}/users/interests/?topic=${name}`),
         queryKey: ["delete", "user", "intrest", name],
         enabled: false,
         onSuccess(res) {
