@@ -3,9 +3,7 @@ import requireAuthorizedUser from '../../../middlewares/auth';
 import { PostController } from './controller';
 
 
-const setupPostRoute = (
-  controller: PostController
-) => {
+const setupPostRoute = (controller: PostController ) => {
   const router = express.Router();
 
   router.route('/')
@@ -17,6 +15,7 @@ const setupPostRoute = (
   router.route('/:id')
     .get(controller.getPost.bind(controller))
     .put(controller.editPost.bind(controller))
+    .delete(controller.deletePost.bind(controller))
   return router;
 }
 

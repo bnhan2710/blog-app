@@ -1,0 +1,1 @@
+export const PostNotFoundErr = new Error('Post not found')

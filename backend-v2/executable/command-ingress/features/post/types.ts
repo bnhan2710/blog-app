@@ -28,15 +28,16 @@ type PostEntity = {
   author?: UserEntity;
 }
 
-interface PostService {
+interface IPostService {
   createPost(postCreationDto: PostCreationDto): Promise<PostEntity>;
   fetchPostsByUser(id: string): Promise<PostEntity[]>;
   getPost(id: string): Promise<PostEntity>
   editPost(id: string, postUpdateDto: PostUpdateDto) : Promise<PostEntity>
+  deletePost(id:string) : Promise<boolean>
 }
 
 export {
-  PostService,
+  IPostService,
   PostCreationDto,
   PostEntity,
   PostUpdateDto

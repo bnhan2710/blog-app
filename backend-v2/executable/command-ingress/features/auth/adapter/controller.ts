@@ -5,9 +5,7 @@ import { ExchangeGoogleTokenBody, LogoutRequestBody, RefreshTokenRequestBody } f
 import { BaseController } from '../../../shared/base-controller';
 import responseValidationError from '../../../shared/response';
 import { HttpRequest } from '../../../types';
-
-
-
+import { validateRequest } from '../../../shared/validate_req';
 class AuthController extends BaseController {
   service: AuthService;
 
