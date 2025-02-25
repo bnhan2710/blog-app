@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import 'reflect-metadata'
 import express from 'express';
 import env from './utils/env';
 import logger from './middlewares/logger';
@@ -11,9 +12,7 @@ import { createServer } from 'http';
 import { AuthController } from './features/auth/adapter/controller';
 import { AuthServiceImpl } from './features/auth/domain/service';
 import { GoogleIdentityBroker } from './features/auth/identity-broker/google-idp.broker';
-import { PostServiceImpl } from './features/post/domain/service';
-import { PostController } from './features/post/adapter/controller';
-
+import { postController } from './containers/post.container';
 import initAuthRoute from './features/auth/adapter/route';
 import initPostRoute from './features/post/adapter/route';
 import initUserRoute from './features/user/adapter/route';
@@ -46,22 +45,20 @@ const createHttpServer = (redisClient: any) => {
     env.JWT_SECRET,
     env.JWT_REFRESH_SECRET,
   );
-  const postService = new PostServiceImpl();
   const userService = new UserServiceImpl();
 
 
   // Setup route
   app.use('/auth', initAuthRoute(new AuthController(authService)));
-  app.use('/post', initPostRoute(new PostController(postService)));
+  app.use('/post', initPostRoute(postController));
   app.use('/users', initUserRoute(new UserController(userService)));
 
   app.use(recoverMiddleware);
 
   // app.use('/search', searchRouter);
   // app.use('/suggestions', setupSuggestionRoute());
-
-
   return server;
+
 };
 
 export {

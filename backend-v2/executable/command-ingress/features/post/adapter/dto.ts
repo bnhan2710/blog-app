@@ -48,3 +48,17 @@ export class GetPostDto extends RequestDto {
     }
   }
 }
+
+
+export class DeletePostDto extends RequestDto{
+  @Length(24)
+  id: string;
+
+  constructor(requestParams: any) {
+    super();
+    if (requestParams) {
+      this.id = requestParams.id;
+    }
+  }
+}
+

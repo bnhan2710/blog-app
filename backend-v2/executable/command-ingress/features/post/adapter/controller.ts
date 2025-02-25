@@ -1,27 +1,23 @@
 import { NextFunction, Response } from 'express';
 import { BaseController } from '../../../shared/base-controller';
-import { PostService } from '../types';
-import { CreatePostBody, GetPostDto, EditPostBody } from './dto';
-import responseValidationError from '../../../shared/response';
+import { IPostService } from '../types';
+import { CreatePostBody, GetPostDto, EditPostBody, DeletePostDto } from './dto';
 import { HttpRequest } from '../../../types';
+import { validateRequest } from '../../../shared/validate_req';
+import { inject } from 'inversify';
+import { DI_TOKENS } from '../../../types/di/DiTypes';
 
 export class PostController extends BaseController {
-  service: PostService;
-
-  constructor(service: PostService) {
-    super();
-    this.service = service;
+  constructor(
+    @inject(DI_TOKENS.POST)  private service : IPostService
+  ) {
+    super()
   }
 
   async getPost(req: HttpRequest, res: Response, next: NextFunction): Promise<void> {
     await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
       const getPostDto = new GetPostDto(req.params);
-      const validateResult = await getPostDto.validate();
-      if (!validateResult.ok) {
-        responseValidationError(res, validateResult.errors[0]);
-        return;
-      }
-
+      await validateRequest(getPostDto,res)
       const post = await this.service.getPost(getPostDto.id);
       res.status(200).json({ post });
       return;
@@ -32,12 +28,7 @@ export class PostController extends BaseController {
     await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
       const body = new CreatePostBody(req.body);
       const sub = req.getSubject();
-      const validateResult = await body.validate();
-      if (!validateResult.ok) {
-        responseValidationError(res, validateResult.errors[0]);
-        return;
-      }
-
+      await validateRequest(body, res)
       const post = await this.service.createPost({
         authorID: sub,
         title: body.title,
@@ -52,16 +43,20 @@ export class PostController extends BaseController {
     });
   }
 
+  async fetchPostByUser(req: HttpRequest, res: Response, next: NextFunction): Promise<void> {
+    await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
+      const id = req.params.id;
+      const posts = await this.service.fetchPostsByUser(id);
+
+      res.status(200).json(posts);
+    });
+  }
+
   async editPost(req: HttpRequest, res: Response, next: NextFunction): Promise<void>{
     await this.execWithTryCatchBlock(req, res , next, async ( req, res,_next) =>{
       const body = new EditPostBody(req.body)
-      const validateResult  = await body.validate()
-      if (!validateResult.ok) {
-        responseValidationError(res, validateResult.errors[0]);
-        return;
-      }
+      await validateRequest(body,res)
       const id = req.params.id;
-
       const post = await this.service.editPost(id, {
         title: body.title,
         markdown: body.markdown,
@@ -71,17 +66,15 @@ export class PostController extends BaseController {
 
       res.status(200).json(post)
     })
-
-
-
   }
 
-  async fetchPostByUser(req: HttpRequest, res: Response, next: NextFunction): Promise<void> {
-    await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
-      const id = req.params.id;
-      const posts = await this.service.fetchPostsByUser(id);
-
-      res.status(200).json(posts);
-    });
+  async deletePost(req: HttpRequest, res: Response, next: NextFunction) : Promise<void>{
+    await this.execWithTryCatchBlock(req, res , next, async ( req, res,_next) =>{
+    const deletePosDto = new DeletePostDto(req.params)
+    await validateRequest(deletePosDto,res)
+    const deleteResult = await this.service.deletePost(deletePosDto.id)
+    res.status(200).json(deleteResult)
+    })
   }
+
 }
