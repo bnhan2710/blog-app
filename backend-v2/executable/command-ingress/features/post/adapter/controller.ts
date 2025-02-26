@@ -9,7 +9,7 @@ import { DI_TOKENS } from '../../../types/di/DiTypes';
 
 export class PostController extends BaseController {
   constructor(
-    @inject(DI_TOKENS.POST)  private service : IPostService
+    @inject(DI_TOKENS.POST_SERVICE)  private service : IPostService
   ) {
     super()
   }

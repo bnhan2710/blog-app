@@ -4,21 +4,17 @@ import express from 'express';
 import env from './utils/env';
 import logger from './middlewares/logger';
 import morgan from 'morgan';
-
 import cors from 'cors';
 import { recoverMiddleware } from './middlewares/recover';
 import { createServer } from 'http';
-
 import { AuthController } from './features/auth/adapter/controller';
 import { AuthServiceImpl } from './features/auth/domain/service';
 import { GoogleIdentityBroker } from './features/auth/identity-broker/google-idp.broker';
 import { postController } from './containers/post.container';
+import { userController } from './containers/user.container';
 import initAuthRoute from './features/auth/adapter/route';
 import initPostRoute from './features/post/adapter/route';
 import initUserRoute from './features/user/adapter/route';
-import { UserController } from './features/user/adapter/controller';
-import { UserServiceImpl } from './features/user/domain/service';
-
 const app = express();
 
 const createHttpServer = (redisClient: any) => {
@@ -45,13 +41,11 @@ const createHttpServer = (redisClient: any) => {
     env.JWT_SECRET,
     env.JWT_REFRESH_SECRET,
   );
-  const userService = new UserServiceImpl();
-
 
   // Setup route
   app.use('/auth', initAuthRoute(new AuthController(authService)));
   app.use('/post', initPostRoute(postController));
-  app.use('/users', initUserRoute(new UserController(userService)));
+  app.use('/users', initUserRoute(userController));
 
   app.use(recoverMiddleware);
 

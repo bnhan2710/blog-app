@@ -1,15 +1,14 @@
 import { Response, Request, NextFunction } from 'express';
 import env from '../../../utils/env';
-import { AuthService } from '../types';
+import { IAuthService } from '../types';
 import { ExchangeGoogleTokenBody, LogoutRequestBody, RefreshTokenRequestBody } from './dto';
 import { BaseController } from '../../../shared/base-controller';
-import responseValidationError from '../../../shared/response';
 import { HttpRequest } from '../../../types';
 import { validateRequest } from '../../../shared/validate_req';
 class AuthController extends BaseController {
-  service: AuthService;
+  service: IAuthService;
 
-  constructor(service: AuthService) {
+  constructor(service: IAuthService) {
     super();
     this.service = service;
   }
@@ -17,13 +16,7 @@ class AuthController extends BaseController {
   async exchangeGoogleToken(req: HttpRequest, res: Response, next: NextFunction): Promise<void> {
     await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
       const exchangeGoogleTokenBody = new ExchangeGoogleTokenBody(req.query);
-
-      const validateResult = await exchangeGoogleTokenBody.validate();
-      if (!validateResult.ok) {
-        responseValidationError(res, validateResult.errors[0]);
-        return;
-      }
-
+      await validateRequest(exchangeGoogleTokenBody,res)
       const exchangeResult = await this.service.exchangeWithGoogleIDP({
         idp: 'google',
         code: exchangeGoogleTokenBody.code,
@@ -45,14 +38,8 @@ class AuthController extends BaseController {
   async logout(req: HttpRequest, res: Response, next: NextFunction): Promise<void> {
     await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
       const logoutRequestBody = new LogoutRequestBody(req.body);
-      const validateResult = await logoutRequestBody.validate();
-      if (!validateResult.ok) {
-        responseValidationError(res, validateResult.errors[0]);
-        return;
-      }
-
+      await validateRequest(logoutRequestBody,res)
       await this.service.logout(logoutRequestBody.refreshToken);
-
       res.sendStatus(200);
       return;
     });
@@ -62,14 +49,8 @@ class AuthController extends BaseController {
 
   async refreshToken(req: Request, res: Response, _next: NextFunction): Promise<void> {
     const refreshTokenRequestBody = new RefreshTokenRequestBody(req.body);
-    const validateResult = await refreshTokenRequestBody.validate();
-    if (!validateResult.ok) {
-      responseValidationError(res, validateResult.errors[0]);
-      return;
-    }
-
+    await validateRequest(refreshTokenRequestBody,res)
     const token = await this.service.refreshToken(refreshTokenRequestBody.refreshToken);
-
     res.status(200).json({
       refresh_token: token.refreshToken,
       access_token: token.accessToken,

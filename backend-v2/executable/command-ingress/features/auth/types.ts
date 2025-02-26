@@ -9,7 +9,7 @@ type ExchangeTokenRequest = {
   idp: string;
 }
 
-interface AuthService {
+interface IAuthService {
   exchangeWithGoogleIDP(request: ExchangeTokenRequest): Promise<ExchangeTokenResult>
   logout(token: string): Promise<void>
   refreshToken(token: string): Promise<ExchangeTokenResult>
@@ -17,7 +17,7 @@ interface AuthService {
 
 
 export {
-  AuthService,
+  IAuthService,
   ExchangeTokenRequest,
   ExchangeTokenResult,
 }
