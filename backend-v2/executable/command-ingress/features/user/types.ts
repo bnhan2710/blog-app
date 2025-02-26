@@ -5,11 +5,15 @@ type UserEntity = {
   avatar: string;
 }
 
-interface UserService {
+interface IUserService {
   getOne(id: string): Promise<UserEntity>;
+  followUser(sub : string, id: string) : Promise<boolean>;
+  unfollowUser(sub : string, id:string) : Promise<boolean>
+  getFollwer(id:string) : Promise<UserEntity[]>
+  getFollowing(string) : Promise<UserEntity[]>
 }
 
 export {
   UserEntity,
-  UserService,
+  IUserService,
 };

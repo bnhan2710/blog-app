@@ -7,7 +7,7 @@ import { DI_TOKENS } from '../types/di/DiTypes';
 const PostDIContainer : Container = new Container()
 
 //Binding
-PostDIContainer.bind<IPostService>(DI_TOKENS.POST).to(PostServiceImpl)
+PostDIContainer.bind<IPostService>(DI_TOKENS.POST_SERVICE).to(PostServiceImpl)
 PostDIContainer.bind<PostController>(PostController).toSelf()
 
 //Resolve

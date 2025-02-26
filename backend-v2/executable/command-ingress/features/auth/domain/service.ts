@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AuthService, ExchangeTokenResult, ExchangeTokenRequest } from '../types';
+import { IAuthService, ExchangeTokenResult, ExchangeTokenRequest } from '../types';
 import User from '../../../../../internal/model/user';
 import Session from '../../../../../internal/model/session';
 import jwt from 'jsonwebtoken';
 import { GoogleIdentityBroker } from '../identity-broker/google-idp.broker';
 
-export class AuthServiceImpl implements AuthService {
+export class AuthServiceImpl implements IAuthService {
   googleIdentityBroker: GoogleIdentityBroker;
   jwtSecret: string;
   jwtRefreshSecret: string;
