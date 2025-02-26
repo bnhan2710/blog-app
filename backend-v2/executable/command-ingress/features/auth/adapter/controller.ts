@@ -3,7 +3,6 @@ import env from '../../../utils/env';
 import { IAuthService } from '../types';
 import { ExchangeGoogleTokenBody, LogoutRequestBody, RefreshTokenRequestBody } from './dto';
 import { BaseController } from '../../../shared/base-controller';
-import responseValidationError from '../../../shared/response';
 import { HttpRequest } from '../../../types';
 import { validateRequest } from '../../../shared/validate_req';
 class AuthController extends BaseController {

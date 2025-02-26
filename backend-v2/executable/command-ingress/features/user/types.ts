@@ -10,7 +10,7 @@ interface IUserService {
   followUser(sub : string, id: string) : Promise<boolean>;
   unfollowUser(sub : string, id:string) : Promise<boolean>
   getFollwer(id:string) : Promise<UserEntity[]>
-  getFollowing(string) : Promise<UserEntity[]>
+  getFollowing(id:string) : Promise<UserEntity[]>
 }
 
 export {
