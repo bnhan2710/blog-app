@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'reflect-metadata'
 import express from 'express';
 import env from './utils/env';
 import logger from './middlewares/logger';
 import morgan from 'morgan';
 import cors from 'cors';
-import { recoverMiddleware } from './middlewares/recover';
+import { asyncHandler } from './middlewares/asyncHandler';
 import { createServer } from 'http';
 import { AuthController } from './features/auth/adapter/controller';
 import { AuthServiceImpl } from './features/auth/domain/service';
@@ -47,7 +46,7 @@ const createHttpServer = (redisClient: any) => {
   app.use('/post', initPostRoute(postController));
   app.use('/users', initUserRoute(userController));
 
-  app.use(recoverMiddleware);
+  app.use(asyncHandler);
 
   // app.use('/search', searchRouter);
   // app.use('/suggestions', setupSuggestionRoute());

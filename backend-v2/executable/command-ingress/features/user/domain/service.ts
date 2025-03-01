@@ -2,6 +2,7 @@ import { UserEntity, IUserService } from '../types';
 import UserModel from '../../../../../internal/model/user';
 import { injectable } from 'inversify';
 import { ErrUserNotFound, ErrAlreadyFollowed, NotYetFollowed } from '../error';
+import mongoose from 'mongoose';
 
 
 @injectable()
@@ -17,41 +18,87 @@ export class UserServiceImpl implements IUserService {
     };
   }
 
-  async followUser(sub: string, id:string): Promise<boolean> {
-    const userFollow = await UserModel.findById(id)
-    if(!userFollow) {
-    throw ErrUserNotFound
-    }
+  async followUser(sub: string, id: string): Promise<boolean> {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    const isFollowed = userFollow.followers.find((id) => String(id) === sub)
-    if(isFollowed){
-      throw ErrAlreadyFollowed
-    }
-    const followResult = await UserModel.updateOne({_id:sub},{ $push:{ followings: id  }})
-    const updateFollower = await UserModel.updateOne({_id: id}, { $push : { followers : sub}})
+    try {
+      const userFollow = await UserModel.findById(id).session(session);
+      if (!userFollow) {
+        throw ErrUserNotFound;
+      }
 
-    if(!followResult.modifiedCount || !updateFollower.modifiedCount){
-      return false
+      const isFollowed = userFollow.followers.find((followerId) => String(followerId) === sub);
+      if (isFollowed) {
+        throw ErrAlreadyFollowed;
+      }
+
+      const followResult = await UserModel.updateOne(
+        { _id: sub },
+        { $push: { followings: id } },
+        { session }
+      );
+      const updateFollower = await UserModel.updateOne(
+        { _id: id },
+        { $push: { followers: sub } },
+        { session }
+      );
+
+      if (!followResult.modifiedCount || !updateFollower.modifiedCount) {
+        await session.abortTransaction();
+        session.endSession();
+        return false;
+      }
+
+      await session.commitTransaction();
+      session.endSession();
+      return true;
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
     }
-    return true
   }
 
   async unfollowUser(sub: string, id: string): Promise<boolean> {
-    const userUnFollow = await UserModel.findById(id)
-    if(!userUnFollow) {
-    throw ErrUserNotFound
+    const session = await mongoose.startSession()
+    await session.startTransaction()
+    try{
+      const userUnfolllow = await UserModel.findById(id).session(session)
+      if(!userUnfolllow){
+        throw ErrUserNotFound
+      }
+      const isFollowed = userUnfolllow.followers.find((id) => String(id) == sub)
+      if(!isFollowed){
+        throw NotYetFollowed
+      }
+      const unfollowResult = await UserModel.updateOne(
+        {_id:sub},
+        { $pull : {followings: id}},
+        { session }
+      )
+
+      const updateFollower = await UserModel.updateOne(
+        {_id:id},
+        { $pull: { followers : sub} },
+        { session }
+      )
+
+      if(!unfollowResult.modifiedCount || updateFollower.modifiedCount){
+        await session.abortTransaction();
+        session.endSession();
+        return false;
+      }
+
+      await session.commitTransaction();
+      session.endSession();
+      return true;
+    }catch(err){
+      await session.abortTransaction();
+      session.endSession();
+      throw err;
     }
-    const isFollowed = userUnFollow.followers.find((id) => String(id) === sub)
-    if(!isFollowed){
-      throw NotYetFollowed
-    }
-    const unfollowResult = await UserModel.updateOne({_id:sub},{ $pull: { followings: id}})
-    const updateFollower = await UserModel.updateOne({_id:id},{ $pull: {followers: sub}})
-    if(!unfollowResult.modifiedCount || !updateFollower.modifiedCount){
-      return false
-    }
-    return true
-  }
+}
 
   async getFollwer(id: string): Promise<UserEntity[]> {
     const isExist = await UserModel.findById(id).populate({
