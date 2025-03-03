@@ -4,7 +4,7 @@ import env from './utils/env';
 import logger from './middlewares/logger';
 import morgan from 'morgan';
 import cors from 'cors';
-import { asyncHandler } from './middlewares/asyncHandler';
+import { errorHandler } from './middlewares/errorHandler';
 import { createServer } from 'http';
 import { AuthController } from './features/auth/adapter/controller';
 import { AuthServiceImpl } from './features/auth/domain/service';
@@ -46,7 +46,7 @@ const createHttpServer = (redisClient: any) => {
   app.use('/post', initPostRoute(postController));
   app.use('/users', initUserRoute(userController));
 
-  app.use(asyncHandler);
+  app.use(errorHandler);
 
   // app.use('/search', searchRouter);
   // app.use('/suggestions', setupSuggestionRoute());

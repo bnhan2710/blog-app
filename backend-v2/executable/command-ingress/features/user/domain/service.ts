@@ -20,7 +20,7 @@ export class UserServiceImpl implements IUserService {
 
   async followUser(sub: string, id: string): Promise<boolean> {
     const session = await mongoose.startSession();
-    session.startTransaction();
+    await session.startTransaction();
 
     try {
       const userFollow = await UserModel.findById(id).session(session);

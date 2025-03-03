@@ -49,7 +49,7 @@ export class UserController extends BaseController {
      const getFollowerDto = new GetFollowersDto(req.params)
      await validateRequest(getFollowerDto,res)
       const followers = await this.service.getFollwer(getFollowerDto.id);
-      res.status(200).json(followers);
+      res.status(200).json({followers});
       return;
     });
   }
@@ -58,7 +58,7 @@ export class UserController extends BaseController {
     await this.execWithTryCatchBlock(req, res, next, async (req, res, _next) => {
       const { id } = req.params;
       const followings = await this.service.getFollowing(id);
-      res.status(200).json(followings);
+      res.status(200).json({followings});
       return;
     });
   }

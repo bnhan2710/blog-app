@@ -16,3 +16,4 @@ const userController = UserContainer.get<UserController>(UserController)
 export {
     userController
 }
+
