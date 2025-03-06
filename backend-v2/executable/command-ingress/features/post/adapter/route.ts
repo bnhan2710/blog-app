@@ -12,11 +12,15 @@ const setupPostRoute = (controller: PostController ) => {
   router.route('/users/:id')
     .get(controller.fetchPostByUser.bind(controller));
 
+  router.route('/feeds').get(requireAuthorizedUser, controller.getFollowingPosts.bind(controller))
+
   router.route('/:id')
     .get(controller.getPost.bind(controller))
     .put(controller.editPost.bind(controller))
     .delete(controller.deletePost.bind(controller))
+
   return router;
+
 }
 
 export default setupPostRoute;

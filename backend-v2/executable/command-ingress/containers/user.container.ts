@@ -7,7 +7,7 @@ import { DI_TOKENS } from '../types/di/DiTypes'
 const UserContainer = new Container
 
 //Binding
-UserContainer.bind<IUserService>(DI_TOKENS.USER_SERVICE).to(UserServiceImpl)
+UserContainer.bind<IUserService>(DI_TOKENS.USER_SERVICE).to(UserServiceImpl).inSingletonScope()
 UserContainer.bind<UserController>(UserController).toSelf()
 
 //Resolve

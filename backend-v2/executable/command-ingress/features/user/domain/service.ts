@@ -84,7 +84,7 @@ export class UserServiceImpl implements IUserService {
         { session }
       )
 
-      if(!unfollowResult.modifiedCount || updateFollower.modifiedCount){
+      if(!unfollowResult.modifiedCount || !updateFollower.modifiedCount){
         await session.abortTransaction();
         session.endSession();
         return false;
