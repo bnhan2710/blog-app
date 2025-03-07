@@ -23,4 +23,5 @@ export class RedisService {
         const posts = await this.redisClient.zRange(key, start, stop, { REV: true });
         return posts;
     }
+
 }

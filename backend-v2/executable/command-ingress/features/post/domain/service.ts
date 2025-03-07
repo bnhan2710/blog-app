@@ -135,12 +135,6 @@ export class PostServiceImpl implements IPostService {
 
   async getFollowingPosts(sub: string): Promise<PostEntity[]> {
     const posts = await this.redisService.getRange(`user:${sub}:feed`, 0, 10)
-    console.log(posts)
-    const postEntities = []
-    for(const post of posts){
-      const postEntity = await this.getPost(post)
-      postEntities.push(postEntity)
-    }
-    return postEntities
+    return posts.map((post: string) => JSON.parse(post))
   }
-  }
+}

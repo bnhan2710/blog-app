@@ -27,7 +27,9 @@ export class Pipeline {
             for (const operator of this.operators) {
                 data = await operator.run(data);
             }
-
+            if (!data) {
+                return;
+            }
             console.log('before sink data:', data);
             await this.sink.save(data);
         });
