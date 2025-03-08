@@ -1,11 +1,21 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import Post from '../../../../../internal/model/post';
 import User from '../../../../../internal/model/user';
 import { PostNotFoundErr } from '../error';
 import { PostEntity, PostCreationDto, IPostService, PostUpdateDto } from '../types';
+import { RedisService } from '../../../shared/services/redis.service';
+import { DI_TOKENS } from '../../../types/di/DiTypes';
 
 @injectable()
 export class PostServiceImpl implements IPostService {
+  private redisService: RedisService;
+
+  constructor(
+    @inject(DI_TOKENS.REDIS_SERVICE) redisService: RedisService
+  ) {
+    this.redisService = redisService;
+  }
+
 
   async createPost(postCreationDto: PostCreationDto): Promise<PostEntity> {
     const codeRegex = /<code>(.*?)<\/code>/g;
@@ -123,4 +133,8 @@ export class PostServiceImpl implements IPostService {
     return deleteResult.deletedCount > 0 ? true : false
   }
 
+  async getFollowingPosts(sub: string): Promise<PostEntity[]> {
+    const posts = await this.redisService.getRange(`user:${sub}:feed`, 0, 10)
+    return posts.map((post: string) => JSON.parse(post))
+  }
 }

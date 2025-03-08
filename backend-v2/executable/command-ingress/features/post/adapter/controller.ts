@@ -77,4 +77,11 @@ export class PostController extends BaseController {
     })
   }
 
+  async getFollowingPosts(req:HttpRequest, res: Response, next: NextFunction):Promise<void> {
+    await this.execWithTryCatchBlock(req, res , next, async ( req, res,_next) =>{
+      const sub = req.getSubject()
+      const feeds = await this.service.getFollowingPosts(sub)
+      res.status(200).json(feeds)
+      })
+  }
 }

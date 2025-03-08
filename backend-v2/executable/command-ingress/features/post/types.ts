@@ -34,6 +34,7 @@ interface IPostService {
   getPost(id: string): Promise<PostEntity>
   editPost(id: string, postUpdateDto: PostUpdateDto) : Promise<PostEntity>
   deletePost(id:string) : Promise<boolean>
+  getFollowingPosts(sub:string) : Promise<PostEntity[]>
 }
 
 export {
