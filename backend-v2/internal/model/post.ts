@@ -4,14 +4,15 @@ const postSchema = new Schema(
   {
     title: {
       type: String,
-      require: true,
+      required: true,
     },
     markdown: {
       type: String,
-      require: true,
+      required: true,
     },
     author: {
       type: Schema.Types.ObjectId,
+      ref: 'users',
       required: true,
     },
     tags: [{ type: String, required: true }],

@@ -11,9 +11,11 @@ import { AuthServiceImpl } from './features/auth/domain/service';
 import { GoogleIdentityBroker } from './features/auth/identity-broker/google-idp.broker';
 import { postController } from './containers/post.container';
 import { userController } from './containers/user.container';
+import { searchController } from './containers/search.container';
 import initAuthRoute from './features/auth/adapter/route';
 import initPostRoute from './features/post/adapter/route';
 import initUserRoute from './features/user/adapter/route';
+import initSearchRoute from './features/search/adapter/route';
 const app = express();
 
 const createHttpServer = (redisClient: any) => {
@@ -45,7 +47,7 @@ const createHttpServer = (redisClient: any) => {
   app.use('/auth', initAuthRoute(new AuthController(authService)));
   app.use('/post', initPostRoute(postController));
   app.use('/users', initUserRoute(userController));
-
+  app.use('/search', initSearchRoute(searchController));
   app.use(errorHandler);
 
   // app.use('/search', searchRouter);
