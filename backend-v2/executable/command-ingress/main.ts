@@ -8,7 +8,7 @@ import { PostChangeStreamSource } from './cdc/source/change-streams.service.ts';
 import { RedisSink } from './cdc/sink/redis_sink';
 import { Operator, Pipeline } from './cdc/pipeline';
 import { connectRedis } from '../../lib/redis';
-import { ExtractFollower } from './cdc/operator/extract_follower';
+import { TransformDataOperator } from './cdc/operator/transfrom_data';
 
 async function start() {
     await mongoose.connect(env.MONGO_URI);
@@ -18,7 +18,7 @@ async function start() {
     const source = new PostChangeStreamSource()
     const sink = new RedisSink(redisClient)
     const operators: Operator[] = []
-    operators.push(new ExtractFollower())
+    operators.push(new TransformDataOperator())
     const pipeline = new Pipeline(source, sink , operators)
     await pipeline.run()
 

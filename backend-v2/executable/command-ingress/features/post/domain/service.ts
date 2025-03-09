@@ -5,6 +5,7 @@ import { PostNotFoundErr } from '../error';
 import { PostEntity, PostCreationDto, IPostService, PostUpdateDto } from '../types';
 import { RedisService } from '../../../shared/services/redis.service';
 import { DI_TOKENS } from '../../../types/di/DiTypes';
+import _ from 'lodash';
 
 @injectable()
 export class PostServiceImpl implements IPostService {
@@ -73,7 +74,7 @@ export class PostServiceImpl implements IPostService {
 
   async fetchPostsByUser(id: string): Promise<PostEntity[]> {
     const results = await Post.find({ author: id })
-      .lean(true);
+      .lean(true).sort({ createdAt: -1 });
 
     return results.map(r => ({
       id: String(r._id),
@@ -130,11 +131,21 @@ export class PostServiceImpl implements IPostService {
       throw PostNotFoundErr
     }
     const deleteResult = await Post.deleteOne({_id: id})
-    return deleteResult.deletedCount > 0 ? true : false
+    if(deleteResult.deletedCount === 0){
+      throw new Error('Delete failed')
+    }
+    const author = await User.findOne({_id: post.author})
+    const followers = _.get(author, 'followers', []).map((follower) => String(follower))
+    const score = new Date(post.createdAt).getTime()
+    for(const follower of followers){
+      await this.redisService.deleteWithScore(`user:${follower}:feed`, score)
+    }
+    return true
   }
 
   async getFollowingPosts(sub: string): Promise<PostEntity[]> {
     const posts = await this.redisService.getRange(`user:${sub}:feed`, 0, 10)
     return posts.map((post: string) => JSON.parse(post))
   }
+
 }

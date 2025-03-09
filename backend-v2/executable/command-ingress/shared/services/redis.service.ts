@@ -15,8 +15,8 @@ export class RedisService {
             .catch((err) => console.error('Redis connection failed:', err));
     }
 
-    async del(key: string): Promise<void> {
-        await this.redisClient.del(key);
+    async deleteWithScore(key: string, score: number): Promise<void> {
+        await this.redisClient.zRemRangeByScore(key, score, score);
     }
 
     async getRange(key: string, start: number, stop: number): Promise<string[]> {
