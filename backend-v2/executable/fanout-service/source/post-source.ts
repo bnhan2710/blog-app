@@ -1,8 +1,8 @@
-import { Source } from '../source';
-import Post from '../../../../internal/model/post';
+import { ISource } from '../source';
+import Post from '../../../internal/model/post';
 import EventEmitter from 'events';
 
-export class PostChangeStreamSource implements Source{
+export class PostSource implements ISource{
     async get() : Promise<EventEmitter> {
         const eventEmitter = new EventEmitter()
         Post.watch()

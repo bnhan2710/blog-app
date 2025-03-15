@@ -1,5 +1,5 @@
 import { EventEmitter } from 'stream';
 
-export interface Source {
+export interface ISource {
     get(): Promise<EventEmitter>
 }

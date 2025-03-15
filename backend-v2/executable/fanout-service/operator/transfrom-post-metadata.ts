@@ -1,8 +1,8 @@
-import { Operator } from '../pipeline'
-import UserModel from '../../../../internal/model/user'
-import PostModel from '../../../../internal/model/post'
+import { Operator } from '../post-fanout-pipeline'
+import UserModel from '../../../internal/model/user'
+import PostModel from '../../../internal/model/post'
 import _ from 'lodash'
-export class TransformDataOperator implements Operator{
+export class TransformPostMetadata implements Operator{
 
     async run(data: any) : Promise<any>{
         if(data.operationType === 'insert'){

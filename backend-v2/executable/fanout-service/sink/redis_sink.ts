@@ -1,7 +1,7 @@
-import { Sink } from '../sink';
+import { ISink } from '../sink';
 import { createClient } from 'redis';
 
-export class RedisSink implements Sink{
+export class RedisPostSink implements ISink{
     redisClient: ReturnType<typeof createClient>;
     constructor( redisClient: ReturnType<typeof createClient> ) {
         this.redisClient = redisClient;

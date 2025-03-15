@@ -7,7 +7,7 @@
     "build": "npx tsc",
     "test": "jest",
     "dev:command-ingress": "nodemon executable/command-ingress/main.ts",
-    "dev": "nodemon executable/command-ingress/main.ts",
+    "dev:fanout-service": "nodemon executable/fanout-service/main.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix ."
   },
