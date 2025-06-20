@@ -1,11 +1,11 @@
 import { inject } from 'inversify';
 import { BaseController } from '../../../shared/base-controller';
-import { HttpRequest } from '../../../types';
+import { HttpRequest } from '../../../shared/types';
 import { IUserService } from '../types';
 import { Response, NextFunction } from 'express';
-import { DI_TOKENS } from '../../../types/di/DiTypes';
+import { DI_TOKENS } from '../../../shared/types/di-types';
 import { FollowUserDto, GetFollowersDto, UnFollowUserDto } from './dto';
-import { validateRequest } from '../../../shared/validate_req';
+import { validateRequest } from '../../../shared//utils/validate-req';
 
 export class UserController extends BaseController {
   constructor(

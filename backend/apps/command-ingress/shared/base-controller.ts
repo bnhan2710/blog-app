@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { AsyncHandler, HttpRequest } from '../types';
+import { AsyncHandler, HttpRequest } from './types';
 
 export class BaseController {
   async execWithTryCatchBlock(req: HttpRequest, res: Response, next: NextFunction, handler: AsyncHandler) {

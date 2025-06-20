@@ -1,5 +1,5 @@
 import { Length, validate, ValidationError } from 'class-validator';
-import { ValidationResult } from '../../../shared/validation';
+import { ValidationResult } from '../../../shared/utils/validation';
 
 export class RequestDto {
   async validate(): Promise<ValidationResult> {

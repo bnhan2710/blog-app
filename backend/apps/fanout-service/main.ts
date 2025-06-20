@@ -2,12 +2,13 @@ import {config} from 'dotenv';
 import path from 'path';
 config({ path: path.join(process.cwd(), '.env') });
 import mongoose from 'mongoose';
-import env from '../command-ingress/utils/env';
+import env from '../command-ingress/shared/env';
 import { PostSource } from './sources/post-source';
 import { FeedSink } from './sinks/feed.sink';
-import { Operator, Pipeline } from './pipelines/post-fanout-pipeline';
+import { Pipeline } from './pipelines/post-fanout-pipeline';
 import { TransformPostMetadata } from './operators/transfrom-post-metadata';
 import { connectRedis } from '../../lib/redis';
+import { IOperator } from './interfaces';
 
 async function main() {
 
@@ -15,7 +16,7 @@ async function main() {
     const redisClient = await connectRedis();
     const postSource = new PostSource()
     const feedSink = new FeedSink(redisClient)
-    const operators: Operator[] = []
+    const operators: IOperator[] = []
     operators.push(new TransformPostMetadata())
     const postFanoutPipeline = new Pipeline(postSource, feedSink , operators)
     await postFanoutPipeline.run()

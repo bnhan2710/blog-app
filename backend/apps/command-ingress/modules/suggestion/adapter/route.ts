@@ -1,5 +1,5 @@
 import express from 'express';
-import isAuthenticated from '../../../middlewares/auth';
+import isAuthenticated from '../../../shared/middlewares/auth';
 
 
 const setupSuggestionRoute = () => {

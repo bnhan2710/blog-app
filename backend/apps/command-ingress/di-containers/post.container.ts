@@ -1,16 +1,17 @@
 import { Container } from 'inversify';
-import { DI_TOKENS } from '../types/di/DiTypes';
-import { RedisService } from '../shared/services/redis.service';
+import { DI_TOKENS } from '../shared/types/di-types';
+import { RedisCacheService } from '../shared/services/redis.service';
 import { IPostService } from '../modules/post/types';
 import { PostServiceImpl } from '../modules/post/domain/service';
 import { PostController } from '../modules/post/adapter/controller';
+import { ICacheService } from '../shared/interfaces';
 
 
 const PostDIContainer: Container = new Container();
 
 
 // Binding
-PostDIContainer.bind<RedisService>(DI_TOKENS.REDIS_SERVICE).to(RedisService).inSingletonScope();
+PostDIContainer.bind<ICacheService>(DI_TOKENS.CACHE_SERVICE).to(RedisCacheService).inSingletonScope();
 
 PostDIContainer.bind<IPostService>(DI_TOKENS.POST_SERVICE).to(PostServiceImpl).inSingletonScope();
 

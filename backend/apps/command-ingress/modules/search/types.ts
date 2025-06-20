@@ -17,6 +17,7 @@ export type PostEntity = {
     image: string;
     tags: string[];
     author: UserEntity;
+
 }
 
 export interface ISearchService {

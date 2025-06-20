@@ -2,7 +2,7 @@ import { UserController } from '../modules/user/adapter/controller'
 import { UserServiceImpl } from '../modules/user/domain/service'
 import { IUserService } from '../modules/user/types'
 import { Container } from 'inversify'
-import { DI_TOKENS } from '../types/di/DiTypes'
+import { DI_TOKENS } from '../shared/types/di-types'
 
 const UserContainer = new Container
 

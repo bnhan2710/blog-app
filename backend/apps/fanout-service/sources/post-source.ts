@@ -12,4 +12,3 @@ export class PostSource implements ISource{
         return eventEmitter
     }
 }
-

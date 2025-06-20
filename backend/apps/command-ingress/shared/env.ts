@@ -6,7 +6,7 @@ const env = cleanEnv(process.env, {
   MONGO_URI: str(),
   JWT_SECRET: str(),
   JWT_REFRESH_SECRET: str(),
-  DEV: bool(),
+  NODE_ENV: str({ choices: ['development', 'production'] }),
   CLIENT_URL: str(),
   GOOGLE_OAUTH_CLIENT_ID: str(),
   GOOGLE_OAUTH_CLIENT_SECRET: str(),

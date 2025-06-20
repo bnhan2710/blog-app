@@ -1,10 +1,10 @@
 import 'reflect-metadata'
 import express from 'express';
-import env from './utils/env';
-import logger from './middlewares/logger';
+import env from './shared/env';
+import logger from './shared/middlewares/logger';
 import morgan from 'morgan';
 import cors from 'cors';
-import { errorHandler } from './middlewares/errorHandler';
+import { ErrorHandler } from './shared/utils';
 import { createServer } from 'http';
 import { AuthController } from './modules/auth/adapter/controller';
 import { AuthServiceImpl } from './modules/auth/domain/service';
@@ -18,10 +18,10 @@ import initUserRoute from './modules/user/adapter/route';
 import initSearchRoute from './modules/search/adapter/route';
 const app = express();
 
-const createHttpServer = (redisClient: any) => {
+export const createHttpServer = (redisClient: any) => {
   const server = createServer(app);
 
-  const isProd = !env.DEV;
+  const isProd = !env.NODE_ENV || env.NODE_ENV === 'production';
   if (isProd) {
     app.use(logger);
   }
@@ -48,14 +48,11 @@ const createHttpServer = (redisClient: any) => {
   app.use('/post', initPostRoute(postController));
   app.use('/users', initUserRoute(userController));
   app.use('/search', initSearchRoute(searchController));
-  app.use(errorHandler);
-
-  // app.use('/search', searchRouter);
+  // app.use('/search', searchRouter());
   // app.use('/suggestions', setupSuggestionRoute());
+
+  // Error handler
+  app.use(ErrorHandler.handle());
   return server;
 
-};
-
-export {
-  createHttpServer,
 };

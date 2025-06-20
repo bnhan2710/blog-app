@@ -3,21 +3,16 @@ import Post from '../../../../../internal/models/post';
 import User from '../../../../../internal/models/user';
 import { PostNotFoundErr } from '../error';
 import { PostEntity, PostCreationDto, IPostService, PostUpdateDto } from '../types';
-import { RedisService } from '../../../shared/services/redis.service';
-import { DI_TOKENS } from '../../../types/di/DiTypes';
+import { DI_TOKENS } from '../../../shared/types/di-types';
 import _ from 'lodash';
+import { NotFoundError } from '../../../shared/utils';
+import { ICacheService } from '../../../shared/interfaces';
 
 @injectable()
 export class PostServiceImpl implements IPostService {
-  private redisService: RedisService;
-
   constructor(
-    @inject(DI_TOKENS.REDIS_SERVICE) redisService: RedisService
-  ) {
-    this.redisService = redisService;
-  }
-
-
+    @inject(DI_TOKENS.CACHE_SERVICE) private cacheService: ICacheService,
+  ) {}
   async createPost(postCreationDto: PostCreationDto): Promise<PostEntity> {
     const codeRegex = /<code>(.*?)<\/code>/g;
     const withoutCode = postCreationDto.markdown.replace(codeRegex, '');
@@ -53,7 +48,6 @@ export class PostServiceImpl implements IPostService {
     }
 
     const user = await User.findOne({ _id: post.author });
-
     return {
       id: String(post._id),
       image: String(post.image),
@@ -134,18 +128,14 @@ export class PostServiceImpl implements IPostService {
     if(deleteResult.deletedCount === 0){
       throw new Error('Delete failed')
     }
-    const author = await User.findOne({_id: post.author})
-    const followers = _.get(author, 'followers', []).map((follower) => String(follower))
-    const score = new Date(post.createdAt).getTime()
-    for(const follower of followers){
-      await this.redisService.deleteWithScore(`user:${follower}:feed`, score)
-    }
     return true
   }
 
-  async getFollowingPosts(sub: string): Promise<PostEntity[]> {
-    const posts = await this.redisService.getRange(`user:${sub}:feed`, 0, 10)
-    return posts.map((post: string) => JSON.parse(post))
+  async getNewFeeds(sub: string): Promise<PostEntity[]> {
+      const posts = await this.cacheService.zRange(`user:${sub}:following-feeds`, 0, 10);
+      if (!posts || posts.length === 0) {
+        return [];
+      }
+   return posts.map((post: string) => JSON.parse(post))
   }
-
 }

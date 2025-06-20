@@ -1,7 +1,8 @@
 import { NextFunction, Response } from 'express';
-import env from '../utils/env';
+import env from '../env';
 import jwt from 'jsonwebtoken';
 import { HttpRequest } from '../types';
+import { AuthFailError } from '../utils';
 
 const requireAuthorizedUser = (req: HttpRequest, res: Response, next: NextFunction) => {
   try {
@@ -9,15 +10,13 @@ const requireAuthorizedUser = (req: HttpRequest, res: Response, next: NextFuncti
     const jwtToken = bearerToken?.split(' ')[1];
 
     if (!jwtToken) {
-      res.sendStatus(401);
-      return;
+      throw new AuthFailError('Unauthorized: No token provided');
     }
 
     const payload = jwt.verify(jwtToken, env.JWT_SECRET);
 
     if (!payload.sub) {
-      res.sendStatus(401);
-      return;
+      throw new AuthFailError('Unauthorized: Invalid token');
     }
 
     req.getSubject = () => String(payload.sub);

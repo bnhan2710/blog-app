@@ -1,27 +1,63 @@
+import { injectable } from 'inversify';
 import { createClient } from 'redis';
-import env from '../../utils/env';
-export class RedisService {
-    private redisClient;
+import { ICacheService } from '../interfaces';
+import env from '../env';
 
-    constructor() {
-        this.redisClient = createClient({ url: env.REDIS_URI });
+@injectable()
+export class RedisCacheService implements ICacheService {
+  private redisClient;
 
-        this.redisClient.on('error', (err) => {
-            console.error('Redis Client Error:', err);
-        });
+  constructor() {
+    this.redisClient = createClient({ url: env.REDIS_URI });
+    this.setupConnection();
+  }
 
-        this.redisClient.connect()
-            .then(() => console.log('Redis connected successfully!'))
-            .catch((err) => console.error('Redis connection failed:', err));
+  private async setupConnection(): Promise<void> {
+    this.redisClient.on('error', (err) => {
+      console.error('Redis Client Error:', err);
+    });
+
+    try {
+      await this.redisClient.connect();
+      console.log('Redis connected successfully!');
+    } catch (err) {
+      console.error('Redis connection failed:', err);
     }
+  }
 
-    async deleteWithScore(key: string, score: number): Promise<void> {
-        await this.redisClient.zRemRangeByScore(key, score, score);
+  async get(key: string): Promise<string | null> {
+    return await this.redisClient.get(key);
+  }
+
+  async set(key: string, value: string, ttl?: number): Promise<void> {
+    if (ttl) {
+      await this.redisClient.setEx(key, ttl, value);
+    } else {
+      await this.redisClient.set(key, value);
     }
+  }
 
-    async getRange(key: string, start: number, stop: number): Promise<string[]> {
-        const posts = await this.redisClient.zRange(key, start, stop, { REV: true });
-        return posts;
-    }
+  async delete(key: string): Promise<void> {
+    await this.redisClient.del(key);
+  }
 
+  async exists(key: string): Promise<boolean> {
+    return (await this.redisClient.exists(key)) === 1;
+  }
+
+  async clear(): Promise<void> {
+    await this.redisClient.flushAll();
+  }
+
+  async zAdd(key: string, score: number, member: string): Promise<void> {
+    await this.redisClient.zAdd(key, { score, value: member });
+  }
+
+  async zRange(key: string, start: number, stop: number): Promise<string[]> {
+    return await this.redisClient.zRange(key, start, stop, { REV: true });
+  }
+
+  async zRemRangeByScore(key: string, min: number, max: number): Promise<void> {
+    await this.redisClient.zRemRangeByScore(key, min, max);
+  }
 }

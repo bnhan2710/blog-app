@@ -1,6 +1,6 @@
 import express from 'express';
 import { UserController } from './controller';
-import requireAuthorizedUser from '../../../middlewares/auth';
+import requireAuthorizedUser from '../../../shared/middlewares/auth';
 
 const setupUserRoute = (controller: UserController) => {
     const router = express.Router();

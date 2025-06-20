@@ -7,8 +7,8 @@
     "build": "npx tsc",
     "test": "jest",
     "dev:command-ingress": "nodemon apps/command-ingress/main.ts",
-    "dev:event-service": "nodemon apps/event-service/main.ts",
-    "dev:all": "nodemon --exec ts-node apps/command-ingress/main.ts --exec ts-node apps/event-service/main.ts",
+    "dev:fanout-service": "nodemon apps/fanout-service/main.ts",
+    "dev:all": "nodemon --exec ts-node apps/command-ingress/main.ts --exec ts-node apps/fanout-service/main.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix ."
   },

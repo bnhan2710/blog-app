@@ -1,10 +1,10 @@
 import { Response, Request, NextFunction } from 'express';
-import env from '../../../utils/env';
+import env from '../../../shared/env';
 import { IAuthService } from '../types';
 import { ExchangeGoogleTokenBody, LogoutRequestBody, RefreshTokenRequestBody } from './dto';
 import { BaseController } from '../../../shared/base-controller';
-import { HttpRequest } from '../../../types';
-import { validateRequest } from '../../../shared/validate_req';
+import { HttpRequest } from '../../../shared/types';
+import { validateRequest } from '../../../shared/validate-req';
 class AuthController extends BaseController {
   service: IAuthService;
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import requireAuthorizedUser from '../../../middlewares/auth';
+import requireAuthorizedUser from '../../../shared/middlewares/auth';
 import { PostController } from './controller';
 
 

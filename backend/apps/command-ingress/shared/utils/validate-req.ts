@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import responseValidationError from './response';
+import responseValidationError from './validation-error.response';
 import { ValidationError } from 'class-validator';
 
 //T must be a data type contain a validate() method

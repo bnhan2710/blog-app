@@ -1,7 +1,12 @@
 
-import {StatusCodes , ReasonPhrases} from 'http-status-codes'
+import {StatusCodes} from 'http-status-codes'
 
-abstract class CustomError extends Error {
+
+function isLoggingEnabled(): boolean {
+  return process.env.DEV ? false : true;
+}
+
+export abstract class CustomError extends Error {
     abstract readonly statusCode: number;
     abstract readonly logging: boolean;
     constructor(message: string) {
@@ -11,31 +16,31 @@ abstract class CustomError extends Error {
 
 export class BadRequestError extends CustomError {
     readonly statusCode = StatusCodes.BAD_REQUEST
-    readonly logging = false
-    constructor(message: string,) {
+    readonly logging = isLoggingEnabled();
+    constructor(message: string) {
         super(message);
        }
 }
 
 export class NotFoundError extends CustomError {
     readonly statusCode = StatusCodes.NOT_FOUND;
-    readonly logging = false;
-    constructor(message: string,) {
+    readonly logging = isLoggingEnabled();
+    constructor(message: string) {
         super(message);
     }
 }
 
 export class AuthFailError extends CustomError{
     readonly statusCode = StatusCodes.UNAUTHORIZED
-    readonly logging = false
-    constructor(message: string,) {
+    readonly logging = isLoggingEnabled();
+    constructor(message: string) {
         super(message);
     }
 }
 
 export class ConflictRequestError extends CustomError{
     readonly statusCode = StatusCodes.CONFLICT
-    readonly logging = false
+    readonly logging = isLoggingEnabled();
     constructor(message:string){
         super(message);
     }
@@ -43,8 +48,9 @@ export class ConflictRequestError extends CustomError{
 
 export class ForbiddenError extends CustomError{
     readonly statusCode = StatusCodes.FORBIDDEN
-    readonly logging = false
+    readonly logging = isLoggingEnabled();
     constructor(message:string){
         super(message);
     }
 }
+

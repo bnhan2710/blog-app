@@ -1,9 +1,9 @@
 import { NextFunction, Response } from 'express';
 import { BaseController } from '../../../shared/base-controller';
-import { HttpRequest } from '../../../types';
-import { validateRequest } from '../../../shared/validate_req';
+import { HttpRequest } from '../../../shared/types';
+import { validateRequest } from '../../../shared/validate-req';
 import { inject } from 'inversify';
-import { DI_TOKENS } from '../../../types/di/DiTypes';
+import { DI_TOKENS } from '../../../shared/types/di-types';
 import { ISearchService } from '../types';
 import { SearchPostDto,SearchUserDto } from './dto';
 

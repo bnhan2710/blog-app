@@ -1,18 +1,13 @@
-import { ISink } from '../interfaces/sink.interface';
-import { ISource } from '../interfaces/source.interface';
+import { ISource, ISink, IOperator } from '../interfaces';
 
 type Transformer = (data: any) => Promise<any>;
-
-interface Operator {
-    run: (data: any) => Promise<any>;
-}
 
 class Pipeline {
     source: ISource;
     sink: ISink;
-    operators: Operator[];
+    operators: IOperator[];
 
-    constructor(source: ISource, sink: ISink, operators: Operator[]) {
+    constructor(source: ISource, sink: ISink, operators: IOperator[]) {
         this.source = source;
         this.sink = sink;
         this.operators = operators;
@@ -38,5 +33,4 @@ class Pipeline {
 export {
     Pipeline,
     Transformer,
-    Operator,
 };

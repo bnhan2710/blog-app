@@ -2,10 +2,10 @@ import { NextFunction, Response } from 'express';
 import { BaseController } from '../../../shared/base-controller';
 import { IPostService } from '../types';
 import { CreatePostBody, GetPostDto, EditPostBody, DeletePostDto } from './dto';
-import { HttpRequest } from '../../../types';
-import { validateRequest } from '../../../shared/validate_req';
+import { HttpRequest } from '../../../shared/types';
+import { validateRequest } from '../../../shared/utils/validate-req';
 import { inject } from 'inversify';
-import { DI_TOKENS } from '../../../types/di/DiTypes';
+import { DI_TOKENS } from '../../../shared/types/di-types';
 
 export class PostController extends BaseController {
   constructor(
@@ -80,7 +80,7 @@ export class PostController extends BaseController {
   async getFollowingPosts(req:HttpRequest, res: Response, next: NextFunction):Promise<void> {
     await this.execWithTryCatchBlock(req, res , next, async ( req, res,_next) =>{
       const sub = req.getSubject()
-      const feeds = await this.service.getFollowingPosts(sub)
+      const feeds = await this.service.getNewFeeds(sub)
       res.status(200).json(feeds)
       })
   }

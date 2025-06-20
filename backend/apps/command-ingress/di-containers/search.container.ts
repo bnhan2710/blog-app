@@ -1,6 +1,6 @@
 import { Container } from 'inversify';
 import { ISearchService } from '../modules/search/types';
-import { DI_TOKENS } from '../types/di/DiTypes';
+import { DI_TOKENS } from '../shared/types/di-types';
 import { SearchController } from '../modules/search/adapter/controller';
 import { SearchServiceImpl } from '../modules/search/domain/service';
 

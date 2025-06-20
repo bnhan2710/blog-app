@@ -1,3 +1,3 @@
-import { NotFoundError } from '../../utils/error.response'
+import { NotFoundError } from '../../shared/utils/custom-errors';
 
 export const PostNotFoundErr = new NotFoundError('Post not found')

@@ -25,12 +25,12 @@ export class UserServiceImpl implements IUserService {
     try {
       const userFollow = await UserModel.findById(id).session(session);
       if (!userFollow) {
-        throw ErrUserNotFound;
+        throw ErrUserNotFound();
       }
 
       const isFollowed = userFollow.followers.find((followerId) => String(followerId) === sub);
       if (isFollowed) {
-        throw ErrAlreadyFollowed;
+        throw ErrAlreadyFollowed();
       }
 
       const followResult = await UserModel.updateOne(
@@ -66,11 +66,11 @@ export class UserServiceImpl implements IUserService {
     try{
       const userUnfolllow = await UserModel.findById(id).session(session)
       if(!userUnfolllow){
-        throw ErrUserNotFound
+        throw ErrUserNotFound()
       }
       const isFollowed = userUnfolllow.followers.find((id) => String(id) == sub)
       if(!isFollowed){
-        throw NotYetFollowed
+        throw NotYetFollowed()
       }
       const unfollowResult = await UserModel.updateOne(
         {_id:sub},
@@ -106,7 +106,7 @@ export class UserServiceImpl implements IUserService {
       select: 'name avatar email'
      })
     if(!isExist){
-      throw ErrUserNotFound
+      throw ErrUserNotFound()
     }
 
     if (!isExist.followers) {
@@ -130,7 +130,7 @@ export class UserServiceImpl implements IUserService {
       select: 'name avatar email'
      })
     if(!isExist){
-      throw ErrUserNotFound
+      throw ErrUserNotFound()
     }
     if(!isExist.followings){
       return []
