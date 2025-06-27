@@ -4,7 +4,7 @@ import { IAuthService } from '../types';
 import { ExchangeGoogleTokenBody, LogoutRequestBody, RefreshTokenRequestBody } from './dto';
 import { BaseController } from '../../../shared/base-controller';
 import { HttpRequest } from '../../../shared/types';
-import { validateRequest } from '../../../shared/validate-req';
+import { validateRequest } from '../../../shared/utils';
 class AuthController extends BaseController {
   service: IAuthService;
 
@@ -45,20 +45,21 @@ class AuthController extends BaseController {
     });
   }
 
-
-
-  async refreshToken(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    const refreshTokenRequestBody = new RefreshTokenRequestBody(req.body);
-    await validateRequest(refreshTokenRequestBody,res)
-    const token = await this.service.refreshToken(refreshTokenRequestBody.refreshToken);
-    res.status(200).json({
-      refresh_token: token.refreshToken,
-      access_token: token.accessToken,
+  async refreshToken(req: HttpRequest, res: Response, _next: NextFunction): Promise<void> {
+    await this.execWithTryCatchBlock(req, res, _next, async (req, res, _next) => {
+      const refreshTokenRequestBody = new RefreshTokenRequestBody(req.body);
+      await validateRequest(refreshTokenRequestBody,res)
+      const token = await this.service.refreshToken(refreshTokenRequestBody.refreshToken);
+      res.status(200).json({
+        refresh_token: token.refreshToken,
+        access_token: token.accessToken,
+      });
+      return;
     });
-
-    return;
   }
+
 }
+
 
 export {
   AuthController,

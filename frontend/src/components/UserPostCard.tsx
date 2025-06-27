@@ -36,9 +36,9 @@ export default function UserPostCard({
   });
 
   function checkIfIFollow() {
-    console.log(followers);
+    console.log('FOLLOWER:::::>>>>>>',followers);
     console.log(user?.id);
-    return followers?.includes(user?.id ?? "");
+    return followers.map((follower: any) => follower.id).includes(user!.id);
   }
 
   function handleFollowUnfollow() {

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { BaseController } from '../../../shared/base-controller';
 import { HttpRequest } from '../../../shared/types';
-import { validateRequest } from '../../../shared/validate-req';
+import { validateRequest } from '../../../shared/utils';
 import { inject } from 'inversify';
 import { DI_TOKENS } from '../../../shared/types/di-types';
 import { ISearchService } from '../types';

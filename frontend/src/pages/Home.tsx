@@ -36,7 +36,7 @@ function HomeContainer({tag}: { tag: string }) {
     useQuery({
         queryFn: () =>
             httpRequest.get(
-                `${url}/post/feeds`
+                `${url}/post/following`
             ),
         queryKey: ["home", "topic", tag],
         enabled: tag != undefined,

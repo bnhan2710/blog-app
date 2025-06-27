@@ -4,7 +4,7 @@ config({ path: path.join(process.cwd(), '.env') });
 import {createHttpServer} from './app';
 import mongoose from 'mongoose';
 import env from './shared/env';
-import { connectRedis } from '../../lib/redis';
+import { connectRedis } from '../../libs/redis';
 async function start() {
     await mongoose.connect(env.MONGO_URI);
     const redisClient = await connectRedis();
@@ -15,8 +15,7 @@ async function start() {
     });
 
     process.on('SIGINT', () => {
-        // redisClient.quit();
-
+        redisClient.quit();
         // Avoid connection leak.
         mongoose.connection.close();
         process.exit(0);
