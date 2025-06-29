@@ -8,13 +8,21 @@ import mongoose from 'mongoose';
 @injectable()
 export class UserServiceImpl implements IUserService {
   async getOne(id: string): Promise<UserEntity> {
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate('followers', 'name avatar email')
 
     return {
       id: String(user._id),
       name: String(user.name),
       avatar: String(user.avatar),
       email: String(user.email),
+      followers: user.followers ? [...user.followers.map((follower: any) => {
+        return {
+          id: String(follower._id),
+          name: String(follower.name),
+          avatar: String(follower.avatar),
+          email: String(follower.email),
+        }
+      })] : [],
     };
   }
 

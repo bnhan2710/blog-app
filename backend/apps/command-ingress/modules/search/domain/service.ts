@@ -3,7 +3,7 @@ import { injectable } from 'inversify';
 import { PostEntity,UserEntity } from '../types';
 import Post from '../../../../../internal/models/post';
 import User from '../../../../../internal/models/user';
-import { ErrNotFoundPost, ErrNotFoundUser } from '../error';
+import { ErrPostNotFound, ErrUserNotFound } from '../error';
 @injectable()
 export class SearchServiceImpl implements ISearchService {
     async postSearch(query: string): Promise<PostEntity[]> {
@@ -19,7 +19,7 @@ export class SearchServiceImpl implements ISearchService {
         }).exec();
 
         if (!posts) {
-            throw ErrNotFoundPost;
+            throw ErrPostNotFound;
         }
         console.log(posts);
         return posts.map((post: any) => {
@@ -51,7 +51,7 @@ export class SearchServiceImpl implements ISearchService {
         }).exec();
 
         if (!users) {
-            throw ErrNotFoundUser;
+            throw ErrUserNotFound;
         }
 
         return users.map((user: any) => {

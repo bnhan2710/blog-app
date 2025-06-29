@@ -22,7 +22,7 @@ export class FeedSink implements ISink{
         const score = (new Date(sinkData.fullDocument.createdAt)).getTime()
         const pipeline = this.redisClient.multi();
         for (const follower of followers) {
-            pipeline.ZADD(`user:${follower}:feed`, {
+            pipeline.ZADD(`user:${follower}:following-feeds`, {
                 score,
                 value: JSON.stringify(post),
             });

@@ -96,21 +96,23 @@ export default function UserCard({
                     {bio && (bio.length > 62 ? bio?.slice(0, 51) + "..." : bio)}
                 </p>
             </Link>
-            <button
-                onClick={() => handleFollowUnfollow()}
-                style={{
-                    backgroundColor: iFollow ? "black" : "transparent",
-                    outline: "transparent",
-                    border: `1px solid ${iFollow ? "black" : "gray"}`,
-                    borderRadius: "17px",
-                    padding: "7px 14px",
-                    cursor: "pointer",
-                    marginLeft: "auto",
-                    color: iFollow ? "white" : "black",
-                }}
-            >
-                {iFollow ? "Following" : "Follow"}
-            </button>
+            {user?.id !== id && (
+                <button
+                    onClick={() => handleFollowUnfollow()}
+                    style={{
+                        backgroundColor: iFollow ? "black" : "transparent",
+                        outline: "transparent",
+                        border: `1px solid ${iFollow ? "black" : "gray"}`,
+                        borderRadius: "17px",
+                        padding: "7px 14px",
+                        cursor: "pointer",
+                        marginLeft: "auto",
+                        color: iFollow ? "white" : "black",
+                    }}
+                >
+                    {iFollow ? "Following" : "Follow"}
+                </button>
+            )}
         </div>
     );
 }

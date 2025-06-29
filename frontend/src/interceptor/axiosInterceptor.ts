@@ -1,55 +1,77 @@
-import axios, {InternalAxiosRequestConfig} from "axios";
+import axios, {InternalAxiosRequestConfig, AxiosError} from "axios";
 import {url} from "../baseUrl";
 
 const axiosInstance = axios.create({});
+const refreshAxiosInstance = axios.create({});
 
 interface CustomAxiosConfig extends InternalAxiosRequestConfig<any> {
     headers: any;
+    _retry?: boolean; 
 }
 
 axiosInstance.interceptors.request.use(
     async (config: CustomAxiosConfig) => {
-        config.headers = {
-            Authorization: `Bearer ${JSON.parse(
-                localStorage.getItem("access_token")!
-            )}`,
-        };
+        const accessToken = localStorage.getItem("access_token");
+        if (accessToken) {
+            try {
+                config.headers = {
+                    ...config.headers,
+                    Authorization: `Bearer ${JSON.parse(accessToken)}`,
+                };
+            } catch (e) {
+                localStorage.removeItem("access_token");
+            }
+        }
         return config;
     },
     (error) => {
-        Promise.reject(error);
+        return Promise.reject(error);
     }
 );
 
 axiosInstance.interceptors.response.use(
     (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-
+    async (error: AxiosError) => {
+        const originalRequest = error.config as CustomAxiosConfig;
         if (
-            error.response.status === 401 &&
-            error.response.data.message === "UnAuthorized, JWT Expired"
+            error.response?.status === 401 && 
+            !originalRequest._retry &&
+            (error.response?.data as any)?.message === "JWT Expired"
         ) {
+            originalRequest._retry = true;
+            
             const refreshToken = localStorage.getItem("refresh_token");
 
             if (refreshToken) {
                 try {
-                    const response = await axiosInstance.post(`${url}/auth/token`, {
-                        token: JSON.parse(refreshToken),
+                    const response = await refreshAxiosInstance.post(`${url}/auth/token`, {
+                        refresh_token: JSON.parse(refreshToken),
                     });
-                    localStorage.setItem(
-                        "access_token",
-                        JSON.stringify(response.data.access_token)
-                    );
+                    
+                    const newAccessToken = response.data.access_token;
+                    const newRefreshToken = response.data.refresh_token;
+                    
+                    localStorage.setItem("access_token", JSON.stringify(newAccessToken));
+                    if (newRefreshToken) {
+                        localStorage.setItem("refresh_token", JSON.stringify(newRefreshToken));
+                    }
 
-                    axiosInstance.defaults.headers["Authorization"] =
-                        "Bearer " + response.data.access_token;
-                    originalRequest.headers["Authorization"] =
-                        "Bearer " + response.data.access_token;
+                    originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+                    
                     return await axiosInstance(originalRequest);
-                } catch (err) {
-                    console.log(err);
+                    
+                } catch (refreshError) {
+                    console.error('Refresh token failed:', refreshError);
+                    
+                    localStorage.removeItem("access_token");
+                    localStorage.removeItem("refresh_token");
+                    
+                    window.location.href = '/signin/in';
+                    
+                    return Promise.reject(refreshError);
                 }
+            } else {
+                window.location.href = '/signin/in';
             }
         }
 

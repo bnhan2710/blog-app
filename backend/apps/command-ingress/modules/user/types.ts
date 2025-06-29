@@ -3,6 +3,7 @@ type UserEntity = {
   email: string;
   name: string;
   avatar: string;
+  followers?: UserEntity[];
 }
 
 interface IUserService {

@@ -7,7 +7,7 @@ import { PostSource } from './sources/post-source';
 import { FeedSink } from './sinks/feed.sink';
 import { Pipeline } from './pipelines/post-fanout-pipeline';
 import { TransformPostMetadata } from './operators/transfrom-post-metadata';
-import { connectRedis } from '../../lib/redis';
+import { connectRedis } from '../../libs/redis';
 import { IOperator } from './interfaces';
 
 async function main() {

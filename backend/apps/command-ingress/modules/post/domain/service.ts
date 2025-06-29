@@ -5,7 +5,6 @@ import { PostNotFoundErr } from '../error';
 import { PostEntity, PostCreationDto, IPostService, PostUpdateDto } from '../types';
 import { DI_TOKENS } from '../../../shared/types/di-types';
 import _ from 'lodash';
-import { NotFoundError } from '../../../shared/utils';
 import { ICacheService } from '../../../shared/interfaces';
 
 @injectable()
@@ -133,9 +132,10 @@ export class PostServiceImpl implements IPostService {
 
   async getNewFeeds(sub: string): Promise<PostEntity[]> {
       const posts = await this.cacheService.zRange(`user:${sub}:following-feeds`, 0, 10);
+      console.log('Posts from cache:', posts);
       if (!posts || posts.length === 0) {
         return [];
       }
-   return posts.map((post: string) => JSON.parse(post))
+   return posts.map((post) => JSON.parse(post))
   }
 }
